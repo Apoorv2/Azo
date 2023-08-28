@@ -10,7 +10,9 @@ import FooterSmall from "components/Footers/FooterSmall.js";
 
 import Login from "views/auth/Login.js";
 import Register from "views/auth/Register.js";
-
+import Formdetails from "views/auth/Formdetails";
+import Choice from "views/auth/Choice";
+import Thirdpageform from "views/auth/Thirdpageform";
 export default function Auth() {
   return (
     <>
@@ -26,6 +28,9 @@ export default function Auth() {
           <Switch>
             <Route path="/auth/login" exact component={Login} />
             <Route path="/auth/register" exact component={Register} />
+            <Route  path="/auth/Formdetails" exact component={Formdetails}/>
+            <Route path="/auth/Choice" exact component={Choice}/>
+            <Route path="/auth/Thirdpageform" exact component={Thirdpageform}/>
             <Redirect from="/auth" to="/auth/login" />
           </Switch>
           <FooterSmall absolute />

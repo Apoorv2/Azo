@@ -1,27 +1,61 @@
-import React, {useState} from "react";
-import { collection , addDoc, query, where, getDocs} from "firebase/firestore";
-import { ReactSession } from 'react-client-session';
+import React, { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { ReactSession } from "react-client-session";
 import { useHistory } from "react-router-dom";
-import {db} from "../../firebase-config";
+import { db } from "../../firebase-config";
 
 export default function Register() {
-  const [name,setName] = useState('');
-  const [email,setEmail] = useState('');
-  const [desc,setDesc] = useState('');
-  const history   = useHistory();
-  const handleSubmit = (e)=>{
-    if(name.length>0 && email.length>0 )
-    {
-      console.log(name);
-      console.log(email);
-      console.log(desc);
-      let Uid=ReactSession.get("uid");
-      let PhoneNumber=ReactSession.get("phoneNumber");
-      const userTableRef = collection(db, "users");
-      addDoc(userTableRef, {uid: Uid, phoneNumber: PhoneNumber, businessName: name, emailID: email,businessDesc: desc});
-      history.push("/admin");
+  const [name, setName] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [email, setEmail] = useState("");
+  const [url, setUrl] = useState("");
+  const [currentStep, setCurrentStep] = useState(1); // Manage the current step
+  const history = useHistory();
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleIndustryChange = (e) => {
+    setIndustry(e.target.value);
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleUrlChange = (e) => {
+    setUrl(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (currentStep === 1) {
+      // First step: Save business information
+      if (name.length > 0 && industry.length > 0 && email.length > 0 && url.length > 0) {
+        const Uid = ReactSession.get("uid");
+        const PhoneNumber = ReactSession.get("phoneNumber");
+        const userTableRef = collection(db, "users");
+        await addDoc(userTableRef, {
+          uid: Uid,
+          phoneNumber: PhoneNumber,
+          businessName: name,
+          industry: industry,
+          emailID: email,
+          website: url,
+        });
+
+        // Navigate to the next step
+        setCurrentStep(2);
+        history.push("/auth/Formdetails")
+      }
+    } else if (currentStep === 2) {
+      // Second step: Navigate to the next page
+      history.push("/auth/Thirdpageform");
     }
-  }
+  };
+
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -31,73 +65,101 @@ export default function Register() {
               <div className="rounded-t mb-0 px-6 py-6">
                 <div className="text-center mb-3">
                   <h6 className="text-blueGray-500 text-sm font-bold">
-                    Enter Your Business Information
+                    {currentStep === 1
+                      ? "Enter Your Business Information"
+                      : "Enter Ad Details"}
                   </h6>
                 </div>
-
                 <hr className="mt-6 border-b-1 border-blueGray-300" />
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
-                <form onSubmit={handleSubmit}>
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Business Name
-                    </label>
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e)=>setName(e.target.value)}
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Business Name"
-                    />
-                  </div>
+                {currentStep === 1 ? (
+                  <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
+                        Business Name
+                      </label>
+                      <input
+                        type="text"
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                        placeholder="Enter Business Name"
+                        value={name}
+                        onChange={handleNameChange}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
+                        Industry
+                      </label>
+                      <select
+                    id="industry"
+                    value={industry}
+                    onChange={handleIndustryChange}
+                    required
+                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  >
+                    <option value="">Select Industry</option>
+  <option value="Automobile">Automobile</option>
+  <option value="Banking and Finance">Banking and Finance</option>
+  <option value="Education and Training">Education and Training</option>
+  <option value="Events and Entertainment">Events and Entertainment</option>
+  <option value="Fashion and Lifestyle">Fashion and Lifestyle</option>
+  <option value="Fitness and Health">Fitness and Health</option>
+  <option value="Food and Restaurant">Food and Restaurant</option>
+  <option value="Healthcare">Healthcare</option>
+  <option value="Home Decor and Construction">Home Decor and Construction</option>
+  <option value="Hospitality">Hospitality</option>
+  <option value="Insurance">Insurance</option>
+  <option value="Marketing/ Advertising/ Agency">Marketing/ Advertising/ Agency</option>
+  <option value="Marketplaces">Marketplaces</option>
+  <option value="NonProfit">NonProfit</option>
+  <option value="Social Enterprise">Social Enterprise</option>
+  <option value="Online Digital Business">Online Digital Business</option>
+  <option value="Professional Services">Professional Services</option>
+  <option value="Real Estate">Real Estate</option>
+  <option value="Retail">Retail</option>
+  <option value="E-commerce">E-commerce</option>
+  <option value="SaaS">SaaS</option>
+  <option value="Software/ IT/ ITES">Software/ IT/ ITES</option>
+  <option value="Telecom">Telecom</option>
+  <option value="Transportation and Logistics">Transportation and Logistics</option>
+  <option value="Travel and Tourism">Travel and Tourism</option>
+  <option value="Others">Others</option>
+</select>
 
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e)=>setEmail(e.target.value)}
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email"
-                    />
-                  </div>
-
-                  <div className="relative w-full mb-3">
-                    <label
-                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
-                    >
-                      Business Description
-                    </label>
-                    <input
-                      type="text"
-                      value={desc}
-                      onChange={(e)=>setDesc(e.target.value)}
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Will be used by AI to generate campaigns"
-                    />
-                  </div>
-
-
-
-                  <div className="text-center mt-6">
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                        placeholder="Enter Email"
+                        value={email}
+                        onChange={handleEmailChange}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
+                        Website Link
+                      </label>
+                      <input
+                        type="url"
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                        placeholder="Enter Website Link"
+                        value={url}
+                        onChange={handleUrlChange}
+                      />
+                    </div>
                     <button
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                       type="submit"
                     >
-                      Submit
+                      Next
                     </button>
-                  </div>
-                </form>
+                  </form>
+                ) : null}
               </div>
             </div>
           </div>
