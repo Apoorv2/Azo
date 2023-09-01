@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase-config";
-import { useHistory } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function Thirdpageform({ onSubmit }) {
   const [locations, setLocations] = useState([""]); // An array to store up to 5 locations
@@ -13,6 +13,18 @@ function Thirdpageform({ onSubmit }) {
   const [ageGroup, setAgeGroup] = useState("");
   const [gender, setGender] = useState("");
   const [dailyBudget, setDailyBudget] = useState(500); // Default daily budget
+  console.log(Cookies.get("logged_in"))
+  useEffect(() => {
+    // Check if FB object exists (from the SDK)
+    if (typeof FB !== "undefined") {
+      window.FB.init({
+        appId: "834829788226350",
+        cookie: true,
+        xfbml: true,
+        version: "v17.0",
+      });
+    }
+  }, []);
 
   const onFileChange = (e) => {
     // Handle the selected file
@@ -65,7 +77,7 @@ function Thirdpageform({ onSubmit }) {
     setLocations(updatedLocations);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     // Combine the form data
@@ -81,22 +93,75 @@ function Thirdpageform({ onSubmit }) {
       dailyBudget,
     };
 
+    // Store form data in cookies
+    Cookies.set("adDetails", JSON.stringify(adDetails));
+
     // Send the adDetails to Firebase Firestore
     try {
-      const adDetailsCollectionRef = collection(db, "Users");
+      const adDetailsCollectionRef = collection(db, "userInfo");
       const newAdDetailsDocRef = doc(adDetailsCollectionRef);
 
-      await addDoc(newAdDetailsDocRef, {
+      addDoc(newAdDetailsDocRef, {
         ...adDetails,
         timestamp: Timestamp.fromDate(new Date()), // Include a timestamp if needed
-      });
+      })
+        .then(() => {
+          // Call the onSubmit function passed from the parent component
+          onSubmit(adDetails);
+        })
+        .catch((error) => {
+          console.error("Error adding document: ", error);
+        });
 
-      // Call the onSubmit function passed from the parent component
-      onSubmit(adDetails);
+      window.FB.login(
+        function (response) {
+          if (response.authResponse) {
+            // User has logged in successfully
+            // You can perform further actions here, e.g., fetch user data
+            console.log("User logged in:", response);
+
+            // Check if the user granted the required permissions
+            if (
+              response.authResponse.grantedScopes.includes("ads_management") &&
+              response.authResponse.grantedScopes.includes("ads_read")
+            ) {
+              // The user granted both "ad_management" and "ad_read" permissions
+              // Proceed with your ad management logic here
+            } else {
+              // The user did not grant the required permissions
+              console.log("User did not grant required permissions.");
+            }
+          } else {
+            // User canceled login or didn't authorize the app
+            console.log(
+              "User canceled login or did not authorize the app."
+            );
+          }
+        },
+        { scope: "ads_management,ads_read", return_scopes: true }
+      );
     } catch (error) {
       console.error("Error adding document: ", error);
     }
   };
+
+  useEffect(() => {
+    // Retrieve user input data from cookies
+    const savedAdDetails = Cookies.get("adDetails");
+
+    if (savedAdDetails) {
+      const parsedAdDetails = JSON.parse(savedAdDetails);
+      setLocations(parsedAdDetails.locations);
+      setFile(parsedAdDetails.file);
+      setHandleUpload(parsedAdDetails.handleUpload);
+      setHeadline(parsedAdDetails.headline);
+      setAdDescription(parsedAdDetails.adDescription);
+      setCta(parsedAdDetails.cta);
+      setAgeGroup(parsedAdDetails.ageGroup);
+      setGender(parsedAdDetails.gender);
+      setDailyBudget(parsedAdDetails.dailyBudget);
+    }
+  }, []);
 
   return (
     <div className="container mx-auto px-4 h-full">
@@ -125,7 +190,7 @@ function Thirdpageform({ onSubmit }) {
                     type="file"
                     id="file-upload"
                     onChange={onFileChange}
-                    className="hidden "
+                    className="hidden"
                   />
                   <label
                     htmlFor="file-upload"
@@ -248,8 +313,8 @@ function Thirdpageform({ onSubmit }) {
                     <option value="Other">Other</option>
                   </select>
                 </div>
-                 {/* Location Fields */}
-                 {locations.map((location, index) => (
+                {/* Location Fields */}
+                {locations.map((location, index) => (
                   <div className="relative w-full mb-3" key={index}>
                     <label
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"

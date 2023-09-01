@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { ReactSession } from 'react-client-session';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/styles/tailwind.css";
@@ -15,11 +14,12 @@ import Auth from "layouts/Auth.js";
 import Landing from "views/Landing.js";
 import Profile from "views/Profile.js";
 import Index from "views/Index.js";
+import Cookies from 'js-cookie';
 
-ReactSession.setStoreType("sessionStorage");
-ReactSession.set("logged_in", false);
-ReactSession.set("uid", null);
-ReactSession.set("phoneNumber", null);
+
+Cookies.set("logged_in", false);
+Cookies.set("uid", null);
+Cookies.set("isAdmin", false);
 
 ReactDOM.render(
   <BrowserRouter>

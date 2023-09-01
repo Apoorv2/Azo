@@ -1,8 +1,9 @@
 // src/components/FormDetails.js
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 function FormDetails({ onSubmit }) {
   const [startDate, setStartDate] = useState(
@@ -26,24 +27,47 @@ function FormDetails({ onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Combine the form data
-    const adDetails = { startDate, duration, platform };
+    //const adDetails = { startDate, duration, platform };
 
     // Send the adDetails to Firebase Firestore
-    try {
-      const adDetailsCollectionRef = collection(db, "users");
-      const newAdDetailsDocRef = doc(adDetailsCollectionRef);
+    // try {
+    //   const adDetailsCollectionRef = collection(db, "users");
+    //   const newAdDetailsDocRef = doc(adDetailsCollectionRef);
 
-      await addDoc(newAdDetailsDocRef, {
-        ...adDetails,
-        timestamp: Timestamp.fromDate(new Date()), // Include a timestamp if needed
-      });
+    //   await addDoc(newAdDetailsDocRef, {
+    //     ...adDetails,
+    //     timestamp: Timestamp.fromDate(new Date()), // Include a timestamp if needed
+    //   });
 
-      // Call the onSubmit function passed from the parent component
-      onSubmit(adDetails);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
+    //   // Call the onSubmit function passed from the parent component
+    //   onSubmit(adDetails);
+    // } catch (error) {
+    //   console.error("Error adding document: ", error);
+    // }
+
+    Cookies.set("startDate",startDate);
+    Cookies.set("duration",duration);
+    Cookies.set("plateform",platform);
   };
+
+  useEffect(() => {
+    // Retrieve user input data from cookies
+    const savedStartDate = Cookies.get('startDate');
+    const savedDuration = Cookies.get('duration');
+    const savedPlateform = Cookies.get('plateform');
+    
+  
+    // Set the input field values with the retrieved data
+    if (savedStartDate) {
+      setStartDate(savedStartDate);
+    }
+    if (savedDuration) {
+      setDuration(savedDuration);
+    }
+    if (savedPlateform) {
+      setPlatform(savedPlateform);
+    }
+  }, []);
 
   return (
     <div className="container mx-auto px-4 h-full">

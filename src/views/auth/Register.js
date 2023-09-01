@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { ReactSession } from "react-client-session";
+import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
 import { db } from "../../firebase-config";
 
@@ -34,17 +34,21 @@ export default function Register() {
     if (currentStep === 1) {
       // First step: Save business information
       if (name.length > 0 && industry.length > 0 && email.length > 0 && url.length > 0) {
-        const Uid = ReactSession.get("uid");
-        const PhoneNumber = ReactSession.get("phoneNumber");
-        const userTableRef = collection(db, "users");
-        await addDoc(userTableRef, {
-          uid: Uid,
-          phoneNumber: PhoneNumber,
-          businessName: name,
-          industry: industry,
-          emailID: email,
-          website: url,
-        });
+        Cookies.set('businessName', name);
+        Cookies.set('industry', industry);
+        Cookies.set('emailID', email);
+        Cookies.set('website', url);
+        // const Uid = Cookies.get("uid");
+        // const PhoneNumber = Cookies.get("phoneNumber");
+        // const userTableRef = collection(db, "users");
+        // await addDoc(userTableRef, {
+        //   uid: Uid,
+        //   phoneNumber: PhoneNumber,
+        //   businessName: name,
+        //   industry: industry,
+        //   emailID: email,
+        //   website: url,
+        // });
 
         // Navigate to the next step
         setCurrentStep(2);
@@ -55,6 +59,29 @@ export default function Register() {
       history.push("/auth/Thirdpageform");
     }
   };
+
+  useEffect(() => {
+    // Retrieve user input data from cookies
+    const savedBusinessName = Cookies.get('businessName');
+    const savedIndustry = Cookies.get('industry');
+    const savedEmail = Cookies.get('emailID');
+    const savedWebsite = Cookies.get('website');
+  
+    // Set the input field values with the retrieved data
+    if (savedBusinessName) {
+      setName(savedBusinessName);
+    }
+    if (savedIndustry) {
+      setIndustry(savedIndustry);
+    }
+    if (savedEmail) {
+      setEmail(savedEmail);
+    }
+    if (savedWebsite) {
+      setUrl(savedWebsite);
+    }
+  }, []);
+  
 
   return (
     <>

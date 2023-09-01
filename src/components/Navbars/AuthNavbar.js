@@ -1,13 +1,75 @@
 /*eslint-disable*/
-import React from "react";
+import React , { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ReactSession } from 'react-client-session';
 // components
 
 import PagesDropdown from "components/Dropdowns/PagesDropdown.js";
+import Cookies from 'js-cookie';
+import { useHistory } from "react-router-dom";
+
 
 export default function Navbar(props) {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const [login, setLogin] = useState(localStorage.getItem("login") === "true");
+  const history = useHistory();
+
+  useEffect(() => {
+    // This effect runs when 'login' state changes
+    // Update cookies and local storage when 'login' state changes
+     console.log("handleclick");
+    console.log(login)
+    console.log(Cookies.get("logged_in"))
+    if (login) {
+      Cookies.set("logged_in", "true");
+      localStorage.setItem("login", "true");
+      console.log(login)
+      console.log(Cookies.get("logged_in"))
+    } else {
+      Cookies.remove("logged_in");
+      Cookies.remove("uid");
+      Cookies.remove("isAdmin");
+      localStorage.setItem("login", "false");
+      console.log(login)
+      console.log(Cookies.get("logged_in"))
+    }
+  }, [login]); //
+
+  const handleclick = () => {
+    if (!login) {
+      history.push("/auth/login");
+    } else {
+      setLogin(false);
+      history.push("/");
+    }
+  };
+
+  // const handleclick = () => {
+  //   console.log("handleclick");
+  //   console.log("login")
+  //   console.log(Cookies.get("logged_in"))
+
+  //   if (!login) {
+  //     // Set cookies and login state to indicate the user is logged in
+  //     Cookies.set("logged_in", "true");
+  //     setLogin(true);
+  //     localStorage.setItem("login", "true");
+  //     history.push("/auth/login");
+  //     console.log("login")
+  //     console.log(Cookies.get("logged_in"))
+  //   } else {
+  //     // Clear cookies and set login state to indicate the user is logged out
+  //     Cookies.remove("logged_in");
+  //     Cookies.remove("uid");
+  //     Cookies.remove("isAdmin");
+  //     setLogin(false);
+  //     localStorage.setItem("login", "false");
+  //     console.log("login")
+  //     console.log(Cookies.get("logged_in"))
+  //     history.push("/");
+  //   }
+  // };
+  
+
   return (
     <>
       <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
@@ -82,12 +144,12 @@ export default function Navbar(props) {
                 </a>
               </li>
               <li className="flex items-center">
-                <button
+                <button onClick={handleclick}
                   className="bg-white text-blueGray-700 active:bg-blueGray-50 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
                   type="button">
                   <i >
                     {
-                      !ReactSession.get("logged_in") ? <Link to="/auth/login">Get Started</Link> : <Link to="/admin/dashboard">Get to Dashboard</Link>
+                      !login ? <div>Get Started</div> : <div>Log out</div>
                     }
                   </i>
                 </button>

@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import { authentication ,db } from "../../firebase-config";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { collection , addDoc, query, where, getDocs} from "firebase/firestore";
-import { ReactSession } from 'react-client-session';
+import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
 
 export default function Login() {
@@ -10,6 +10,10 @@ export default function Login() {
   const [phone,setPhone] = useState('');
   const [otp,setOtp] = useState('');
   const history   = useHistory();
+  const userTableRef = collection(db, "users");
+  const OTPTableRef = collection(db, "generatedOTP");
+  const adminTableRef= collection(db, "admin");
+
   const generateRecaptcha = ()=>{
     window.recaptchaVerifier = new RecaptchaVerifier(authentication, 'recaptcha-container', {
       'size': 'invisible',
@@ -19,52 +23,86 @@ export default function Login() {
       }
     });
   }
-  const handleSubmit = (e)=>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(phone.length>=10) {
+    if (phone.length >= 10) {
       if (otpSent === false) {
         generateRecaptcha();
-        let appVerifier=window.recaptchaVerifier;
-        signInWithPhoneNumber(authentication,phone,appVerifier).then((confirmationResult) => {
+        let appVerifier = window.recaptchaVerifier;
+        signInWithPhoneNumber(authentication, phone, appVerifier).then((confirmationResult) => {
           window.confirmationResult = confirmationResult;
         }).catch((error) => {
-            console.log(error);
+          console.log(error);
         });
-        setOtpSent(true);
-      } else
-      {
-        if(otp.length===6)
+        const q = query(OTPTableRef, where("phoneNumber", "==", phone));
+        const querySnapshot = await getDocs(q);
+        let phoneNumbercnt = 0;
+        querySnapshot.forEach((doc) => {
+          phoneNumbercnt++;
+        });
+        if(phoneNumbercnt===0)
         {
-          let confirmationResult=window.confirmationResult;
+          await addDoc(OTPTableRef, {
+            phoneNumber: phone,
+          });
+        }
+        setOtpSent(true);
+      } else {
+        if (otp.length === 6) {
+          let confirmationResult = window.confirmationResult;
           confirmationResult.confirm(otp).then(async (result) => {
             const user = result.user;
-            ReactSession.set("logged_in", true);
-            ReactSession.set("uid", user.uid);
-            ReactSession.set("phoneNumber", user.phoneNumber);
-            const userTableRef = collection(db, "users");
+            Cookies.set("logged_in", true);
+            Cookies.set("uid", user.uid);
+
             const q = query(userTableRef, where("uid", "==", user.uid));
             const querySnapshot = await getDocs(q);
-            let cnt=0;
+            let usercnt = 0;
             querySnapshot.forEach((doc) => {
               // doc.data() is never undefined for query doc snapshots
-              cnt++;
+              usercnt++;
             });
-            if(cnt>0)
-            {
-              history.push("/admin");
-            }
-            else
-            {
-              history.push("/auth/register");
-            }
+            // if (cnt > 0) {
+            //   history.push("/admin");
+            // } else {
+            //   history.push("/auth/register");
+            // }
             //addDoc(userTableRef, {uid: user.uid, phoneNumber: user.phoneNumber})
-            console.log(user.uid)
+            //console.log(user.uid)
+            if(usercnt===0)
+            {
+              await addDoc(userTableRef, {
+                uid: user.uid,
+                phoneNumber: user.phoneNumber,
+              });
+            }
+            const q1 = query(adminTableRef, where("uid", "==", user.uid));
+            const querySnapshot1 = await getDocs(q1);
+            let Admincnt = 0;
+            querySnapshot1.forEach((doc) => {
+              // doc.data() is never undefined for query doc snapshots
+              Admincnt++;
+            });
+            if(Admincnt>0)
+            {
+              Cookies.set("isAdmin", true);
+            }
+            console.log(usercnt);
+            console.log(Admincnt);
+            console.log(Cookies.get("uid"));
+            history.push("/auth/choice");
           }).catch((error) => {
             console.log(error);
           });
         }
       }
     }
+  }
+
+  console.log(Cookies.get("logged_in"));
+  if(Cookies.get("logged_in"))
+  {
+    history.push("/");
   }
   return (
     <>
