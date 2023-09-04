@@ -104,7 +104,7 @@ export default function Register() {
                   <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Business Name
+                        Business Name <span className="text-red-300">*</span>
                       </label>
                       <input
                         type="text"
@@ -116,7 +116,7 @@ export default function Register() {
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Industry
+                        Industry <span className="text-red-300">*</span>
                       </label>
                       <select
                     id="industry"
@@ -126,38 +126,38 @@ export default function Register() {
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   >
                     <option value="">Select Industry</option>
-  <option value="Automobile">Automobile</option>
-  <option value="Banking and Finance">Banking and Finance</option>
-  <option value="Education and Training">Education and Training</option>
-  <option value="Events and Entertainment">Events and Entertainment</option>
-  <option value="Fashion and Lifestyle">Fashion and Lifestyle</option>
-  <option value="Fitness and Health">Fitness and Health</option>
-  <option value="Food and Restaurant">Food and Restaurant</option>
-  <option value="Healthcare">Healthcare</option>
-  <option value="Home Decor and Construction">Home Decor and Construction</option>
-  <option value="Hospitality">Hospitality</option>
-  <option value="Insurance">Insurance</option>
-  <option value="Marketing/ Advertising/ Agency">Marketing/ Advertising/ Agency</option>
-  <option value="Marketplaces">Marketplaces</option>
-  <option value="NonProfit">NonProfit</option>
-  <option value="Social Enterprise">Social Enterprise</option>
-  <option value="Online Digital Business">Online Digital Business</option>
-  <option value="Professional Services">Professional Services</option>
-  <option value="Real Estate">Real Estate</option>
-  <option value="Retail">Retail</option>
-  <option value="E-commerce">E-commerce</option>
-  <option value="SaaS">SaaS</option>
-  <option value="Software/ IT/ ITES">Software/ IT/ ITES</option>
-  <option value="Telecom">Telecom</option>
-  <option value="Transportation and Logistics">Transportation and Logistics</option>
-  <option value="Travel and Tourism">Travel and Tourism</option>
-  <option value="Others">Others</option>
+                    <option value="Automobile">Automobile</option>
+                    <option value="Banking and Finance">Banking and Finance</option>
+                    <option value="Education and Training">Education and Training</option>
+                    <option value="Events and Entertainment">Events and Entertainment</option>
+                    <option value="Fashion and Lifestyle">Fashion and Lifestyle</option>
+                    <option value="Fitness and Health">Fitness and Health</option>
+                    <option value="Food and Restaurant">Food and Restaurant</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Home Decor and Construction">Home Decor and Construction</option>
+                    <option value="Hospitality">Hospitality</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Marketing/ Advertising/ Agency">Marketing/ Advertising/ Agency</option>
+                    <option value="Marketplaces">Marketplaces</option>
+                    <option value="NonProfit">NonProfit</option>
+                    <option value="Social Enterprise">Social Enterprise</option>
+                    <option value="Online Digital Business">Online Digital Business</option>
+                    <option value="Professional Services">Professional Services</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Retail">Retail</option>
+                    <option value="E-commerce">E-commerce</option>
+                    <option value="SaaS">SaaS</option>
+                    <option value="Software/ IT/ ITES">Software/ IT/ ITES</option>
+                    <option value="Telecom">Telecom</option>
+                    <option value="Transportation and Logistics">Transportation and Logistics</option>
+                    <option value="Travel and Tourism">Travel and Tourism</option>
+                    <option value="Others">Others</option>
 </select>
 
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Email
+                        Email <span className="text-red-300">*</span>
                       </label>
                       <input
                         type="email"
@@ -169,7 +169,7 @@ export default function Register() {
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Website Link
+                        Website Link<span className="text-red-300">*</span>
                       </label>
                       <input
                         type="url"

@@ -10,29 +10,29 @@ import { useHistory } from "react-router-dom";
 
 export default function Navbar(props) {
   const [navbarOpen, setNavbarOpen] = React.useState(false);
-  const [login, setLogin] = useState(localStorage.getItem("login") === "true");
+  const [login, setLogin] = useState(false);
   const history = useHistory();
 
-  useEffect(() => {
-    // This effect runs when 'login' state changes
-    // Update cookies and local storage when 'login' state changes
-     console.log("handleclick");
-    console.log(login)
-    console.log(Cookies.get("logged_in"))
-    if (login) {
-      Cookies.set("logged_in", "true");
-      localStorage.setItem("login", "true");
-      console.log(login)
-      console.log(Cookies.get("logged_in"))
-    } else {
-      Cookies.remove("logged_in");
-      Cookies.remove("uid");
-      Cookies.remove("isAdmin");
-      localStorage.setItem("login", "false");
-      console.log(login)
-      console.log(Cookies.get("logged_in"))
-    }
-  }, [login]); //
+  // useEffect(() => {
+  //   // This effect runs when 'login' state changes
+  //   // Update cookies and local storage when 'login' state changes
+  //   console.log("handleclick");
+  //   console.log("login: "+ login)
+  //   console.log(Cookies.get("logged_in"))
+  //   if (Cookies.get("logged_in")) {
+  //     Cookies.set("logged_in", "true");
+  //     setLogin(true);
+  //     console.log(login)
+  //     console.log(Cookies.get("logged_in"))
+  //   } else {
+  //     Cookies.remove("logged_in");
+  //     Cookies.remove("uid");
+  //     Cookies.remove("isAdmin");
+  //     setLogin(false);
+  //     console.log("login: "+ login)
+  //     console.log(Cookies.get("logged_in"))
+  //   }
+  // }, [login]); //
 
   const handleclick = () => {
     if (!login) {
@@ -46,7 +46,7 @@ export default function Navbar(props) {
   // const handleclick = () => {
   //   console.log("handleclick");
   //   console.log("login")
-  //   console.log(Cookies.get("logged_in"))
+  //   console.log("Login: "+Cookies.get("logged_in"))
 
   //   if (!login) {
   //     // Set cookies and login state to indicate the user is logged in

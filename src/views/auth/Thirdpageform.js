@@ -79,9 +79,17 @@ function Thirdpageform({ onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     // Combine the form data
+    
     const adDetails = {
+      businessName: Cookies.get("businessName") || "", // Retrieve from cookies
+      industry: Cookies.get("industry") || "", // Retrieve from cookies
+      emailID: Cookies.get("emailID") || "", // Retrieve from cookies
+      website: Cookies.get("website") || "", // Retrieve from cookies
+      startDate: Cookies.get("startDate") || "", // Retrieve from cookies
+      duration: Cookies.get("duration") || "", // Retrieve from cookies
+      platform: Cookies.get("plateform") || "", 
       locations: locations.filter((location) => location.trim() !== ""), // Remove empty locations
       file,
       handleUpload,
@@ -92,15 +100,15 @@ function Thirdpageform({ onSubmit }) {
       gender,
       dailyBudget,
     };
-
+  
     // Store form data in cookies
     Cookies.set("adDetails", JSON.stringify(adDetails));
-
+  
     // Send the adDetails to Firebase Firestore
     try {
       const adDetailsCollectionRef = collection(db, "userInfo");
       const newAdDetailsDocRef = doc(adDetailsCollectionRef);
-
+  
       addDoc(newAdDetailsDocRef, {
         ...adDetails,
         timestamp: Timestamp.fromDate(new Date()), // Include a timestamp if needed
@@ -112,14 +120,15 @@ function Thirdpageform({ onSubmit }) {
         .catch((error) => {
           console.error("Error adding document: ", error);
         });
-
+  
+      // Move the window.FB.login call outside of the Firestore block
       window.FB.login(
         function (response) {
           if (response.authResponse) {
             // User has logged in successfully
             // You can perform further actions here, e.g., fetch user data
             console.log("User logged in:", response);
-
+  
             // Check if the user granted the required permissions
             if (
               response.authResponse.grantedScopes.includes("ads_management") &&
@@ -196,7 +205,7 @@ function Thirdpageform({ onSubmit }) {
                     htmlFor="file-upload"
                     className="cursor-pointer bg-blueGray-600 text-white active:bg-blueGray-800 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   >
-                    {file ? "File Selected" : "Select File"}
+                    {file ? `File Selected: ${file.name}` : "Select File"}
                   </label>
                 </div>
                 {/* Handling Uploads Checkbox */}
@@ -270,6 +279,7 @@ function Thirdpageform({ onSubmit }) {
                     <option value="Get Quote">Get Quote</option>
                     <option value="Learn More">Learn More</option>
                     <option value="Sign Up">Sign Up</option>
+                    <option value="Sign Up">Other</option>
                   </select>
                 </div>
                 {/* Age Group */}
@@ -278,7 +288,7 @@ function Thirdpageform({ onSubmit }) {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="age-group"
                   >
-                    Target Audience Age
+                    Target Audience Age <span className="text-red-300">*</span>
                   </label>
                   <select
                     id="age-group"
@@ -299,7 +309,7 @@ function Thirdpageform({ onSubmit }) {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="gender"
                   >
-                    Target Audience Gender
+                    Target Audience Gender <span className="text-red-300">*</span>
                   </label>
                   <select
                     id="gender"
@@ -320,7 +330,7 @@ function Thirdpageform({ onSubmit }) {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor={`location-${index}`}
                     >
-                      Location {index + 1}
+                      Location {index + 1} <span className="text-red-300">*</span>
                     </label>
                     <div className="flex">
                       <input
@@ -347,7 +357,7 @@ function Thirdpageform({ onSubmit }) {
                   onClick={addLocationField}
                   className="mb-3 bg-blueGray-500  text-blueGray-600 active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-2 rounded-full hover:bg-blueGray-600 focus:outline-none"
                 >
-                  Add Location
+                  Add Location 
                 </button>
                 {/* Daily Budget */}
                 <div className="relative w-full mb-3">
@@ -355,7 +365,7 @@ function Thirdpageform({ onSubmit }) {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="daily-budget"
                   >
-                    Daily Budget (in Rupees)
+                    Daily Budget (in Rupees) <span className="text-red-300">*</span>
                   </label>
                   <input
                     type="number"

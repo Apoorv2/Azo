@@ -89,7 +89,7 @@ function FormDetails({ onSubmit }) {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="start-date"
                   >
-                    Start Date
+                    Start Date <span className="text-red-300">*</span>
                   </label>
                   <input
                     type="date"
@@ -105,7 +105,7 @@ function FormDetails({ onSubmit }) {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="duration"
                   >
-                    Duration (in days)
+                    Duration (in days) <span className="text-red-300">*</span>
                   </label>
                   <input
                     type="number"
@@ -123,7 +123,7 @@ function FormDetails({ onSubmit }) {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="platform"
                   >
-                    Platform for Advertising
+                    Platform for Advertising <span className="text-red-300">*</span>
                   </label>
                   <select
                     id="platform"

@@ -4,16 +4,18 @@ import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { collection , addDoc, query, where, getDocs} from "firebase/firestore";
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
+import { isNamedExportBindings } from "typescript";
 
 export default function Login() {
+  console.log("logged_in: "+Cookies.get("logged_in"));
   const [otpSent,setOtpSent] = useState(false);
   const [phone,setPhone] = useState('');
   const [otp,setOtp] = useState('');
   const history   = useHistory();
+  const generatedOTPTableRef = collection(db, "generatedOTP");
   const userTableRef = collection(db, "users");
-  const OTPTableRef = collection(db, "generatedOTP");
   const adminTableRef= collection(db, "admin");
-
+  const countryCode = "+91";
   const generateRecaptcha = ()=>{
     window.recaptchaVerifier = new RecaptchaVerifier(authentication, 'recaptcha-container', {
       'size': 'invisible',
@@ -23,87 +25,103 @@ export default function Login() {
       }
     });
   }
+//   useEffect(() => {
+//   if(Cookies.get("logged_in"))
+//   {
+//     history.push("/");
+//   }
+// },[]);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (phone.length >= 10) {
-      if (otpSent === false) {
-        generateRecaptcha();
-        let appVerifier = window.recaptchaVerifier;
-        signInWithPhoneNumber(authentication, phone, appVerifier).then((confirmationResult) => {
-          window.confirmationResult = confirmationResult;
-        }).catch((error) => {
-          console.log(error);
-        });
-        const q = query(OTPTableRef, where("phoneNumber", "==", phone));
-        const querySnapshot = await getDocs(q);
-        let phoneNumbercnt = 0;
-        querySnapshot.forEach((doc) => {
-          phoneNumbercnt++;
-        });
-        if(phoneNumbercnt===0)
-        {
-          await addDoc(OTPTableRef, {
-            phoneNumber: phone,
-          });
-        }
-        setOtpSent(true);
-      } else {
-        if (otp.length === 6) {
-          let confirmationResult = window.confirmationResult;
-          confirmationResult.confirm(otp).then(async (result) => {
-            const user = result.user;
-            Cookies.set("logged_in", true);
-            Cookies.set("uid", user.uid);
+  
+    if (phone.length === 10) {
+      const fullPhoneNumber = countryCode + phone;
+      const q = query(userTableRef, where("phoneNumber", "==", fullPhoneNumber));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.size === 0) {
+        if (!otpSent) {
+          generateRecaptcha();
+          let appVerifier = window.recaptchaVerifier;
+          signInWithPhoneNumber(authentication, fullPhoneNumber, appVerifier)
+            .then((confirmationResult) => {
+              window.confirmationResult = confirmationResult;
+              setOtpSent(true);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } else {
+          if (otp.length === 6) {
+            let confirmationResult = window.confirmationResult;
+            confirmationResult
+              .confirm(otp)
+              .then(async (result) => {
+                const user = result.user;
+                Cookies.set("logged_in", true);
+                Cookies.set("uid", user.uid);
+  
+                const q1 = query(adminTableRef, where("uid", "==", user.uid));
+                const querySnapshot1 = await getDocs(q1);
+  
+                if (querySnapshot1.size != 0) {
+                  Cookies.set("isAdmin", true);
+                
+  
+                history.push("/auth/adminform");
+                }
+                console.log("isAdmin: "+ Cookies.get("isAdmin"));
+                if(user.phoneNumber){
+                const data = {
+                  uid: user.uid,
+                  phoneNumber: fullPhoneNumber
+                };
+                try {
+                  const docRef = await addDoc(userTableRef, data);
+                  console.log("Document added with ID: ", docRef.id);
+                } catch (error) {
+                  console.error("Error adding document: ", error);
+                }
+              }
+              else {
+                // Verification not done, store the phone number in "generatedOTP" table
+                const data = {
+                  phoneNumber: fullPhoneNumber,
+                };
 
-            const q = query(userTableRef, where("uid", "==", user.uid));
-            const querySnapshot = await getDocs(q);
-            let usercnt = 0;
-            querySnapshot.forEach((doc) => {
-              // doc.data() is never undefined for query doc snapshots
-              usercnt++;
-            });
-            // if (cnt > 0) {
-            //   history.push("/admin");
-            // } else {
-            //   history.push("/auth/register");
-            // }
-            //addDoc(userTableRef, {uid: user.uid, phoneNumber: user.phoneNumber})
-            //console.log(user.uid)
-            if(usercnt===0)
-            {
-              await addDoc(userTableRef, {
-                uid: user.uid,
-                phoneNumber: user.phoneNumber,
+                try {
+                  const docRef = await addDoc(generatedOTPTableRef, data);
+                  console.log("Document added with ID: ", docRef.id);
+                } catch (error) {
+                  console.error("Error adding document: ", error);
+                }
+              }
+              })
+              .catch((error) => {
+                console.error(error);
               });
-            }
-            const q1 = query(adminTableRef, where("uid", "==", user.uid));
-            const querySnapshot1 = await getDocs(q1);
-            let Admincnt = 0;
-            querySnapshot1.forEach((doc) => {
-              // doc.data() is never undefined for query doc snapshots
-              Admincnt++;
-            });
-            if(Admincnt>0)
-            {
-              Cookies.set("isAdmin", true);
-            }
-            console.log(usercnt);
-            console.log(Admincnt);
-            console.log(Cookies.get("uid"));
-            history.push("/auth/choice");
-          }).catch((error) => {
-            console.log(error);
-          });
+          }
+          
         }
+      } else {
+        // Assuming there's only one matching document, get the UID
+        const userDoc = querySnapshot.docs[0];
+        const uid = userDoc.get("uid"); // Replace "uid" with the actual field name where you store the UID
+        Cookies.set("uid", uid);
+        history.push("/");
+        // Continue with your existing code...
+        // For example, you can check if the user is an admin and set an "isAdmin" cookie, etc.
       }
     }
-  }
+  };
+  
 
-  console.log(Cookies.get("logged_in"));
-  if(Cookies.get("logged_in"))
-  {
-    history.push("/");
-  }
+  // console.log("login: "+ Cookies.get("logged_in"));
+  // if(Cookies.get("logged_in"))
+  // {
+  //   history.push("/");
+  // }
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -166,7 +184,7 @@ export default function Login() {
                           className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                           type={"submit"}
                       >
-                        Get OTP
+                       Authenticate
                       </button>
                     }
                   </div>}

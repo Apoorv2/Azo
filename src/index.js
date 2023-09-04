@@ -14,9 +14,10 @@ import Auth from "layouts/Auth.js";
 import Landing from "views/Landing.js";
 import Profile from "views/Profile.js";
 import Index from "views/Index.js";
+import TableComparison from "views/TableComparison";
 import Cookies from 'js-cookie';
-
-
+import Aboutus from "views/Aboutus";
+import AdminForm from "views/AdminForm";
 Cookies.set("logged_in", false);
 Cookies.set("uid", null);
 Cookies.set("isAdmin", false);
@@ -31,6 +32,9 @@ ReactDOM.render(
       <Route path="/landing" exact component={Index} />
       <Route path="/profile" exact component={Profile} />
       <Route path="/" exact component={Landing} />
+      <Route path="/aboutus" exact component={Aboutus} />
+      <Route path="/Adminform" exact component={AdminForm} />
+      <Route path="/tableCompare" exact component={TableComparison}/>
       {/* add redirect for first page */}
       <Redirect from="*" to="/" />
     </Switch>
