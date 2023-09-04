@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Cookies from "js-cookie";
+import { useHistory } from "react-router-dom";
 
 function Thirdpageform({ onSubmit }) {
+  const history   = useHistory();
   const [locations, setLocations] = useState([""]); // An array to store up to 5 locations
   const [file, setFile] = useState(null);
   const [handleUpload, setHandleUpload] = useState(false);
@@ -14,17 +16,17 @@ function Thirdpageform({ onSubmit }) {
   const [gender, setGender] = useState("");
   const [dailyBudget, setDailyBudget] = useState(500); // Default daily budget
   console.log(Cookies.get("logged_in"))
-  useEffect(() => {
-    // Check if FB object exists (from the SDK)
-    if (typeof FB !== "undefined") {
-      window.FB.init({
-        appId: "834829788226350",
-        cookie: true,
-        xfbml: true,
-        version: "v17.0",
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Check if FB object exists (from the SDK)
+  //   if (typeof FB !== "undefined") {
+  //     window.FB.init({
+  //       appId: "834829788226350",
+  //       cookie: true,
+  //       xfbml: true,
+  //       version: "v17.0",
+  //     });
+  //   }
+  // }, []);
 
   const onFileChange = (e) => {
     // Handle the selected file
@@ -77,78 +79,71 @@ function Thirdpageform({ onSubmit }) {
     setLocations(updatedLocations);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Combine the form data
-    
+
     const adDetails = {
+      uid: Cookies.get("uid"),
+      phoneNumber: Cookies.get("phoneNumber"),
       businessName: Cookies.get("businessName") || "", // Retrieve from cookies
       industry: Cookies.get("industry") || "", // Retrieve from cookies
       emailID: Cookies.get("emailID") || "", // Retrieve from cookies
       website: Cookies.get("website") || "", // Retrieve from cookies
       startDate: Cookies.get("startDate") || "", // Retrieve from cookies
       duration: Cookies.get("duration") || "", // Retrieve from cookies
-      platform: Cookies.get("plateform") || "", 
+      platform: Cookies.get("plateform") || "",
       locations: locations.filter((location) => location.trim() !== ""), // Remove empty locations
-      file,
-      handleUpload,
-      headline,
-      adDescription,
-      cta,
-      ageGroup,
-      gender,
-      dailyBudget,
+      file: file,
+      handleUpload: handleUpload,
+      headline: headline,
+      adDescription: adDescription,
+      cta: cta,
+      ageGroup: ageGroup,
+      gender: gender,
+      dailyBudget: dailyBudget,
     };
-  
+
     // Store form data in cookies
     Cookies.set("adDetails", JSON.stringify(adDetails));
-  
+
     // Send the adDetails to Firebase Firestore
     try {
       const adDetailsCollectionRef = collection(db, "userInfo");
       const newAdDetailsDocRef = doc(adDetailsCollectionRef);
-  
-      addDoc(newAdDetailsDocRef, {
-        ...adDetails,
-        timestamp: Timestamp.fromDate(new Date()), // Include a timestamp if needed
-      })
-        .then(() => {
-          // Call the onSubmit function passed from the parent component
-          onSubmit(adDetails);
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-        });
-  
+      const docRef = await addDoc(adDetailsCollectionRef, adDetails);
+      console.log("Document added in userInfo with ID: ", docRef.id);
+      history.push("/admin");
+
       // Move the window.FB.login call outside of the Firestore block
-      window.FB.login(
-        function (response) {
-          if (response.authResponse) {
-            // User has logged in successfully
-            // You can perform further actions here, e.g., fetch user data
-            console.log("User logged in:", response);
-  
-            // Check if the user granted the required permissions
-            if (
-              response.authResponse.grantedScopes.includes("ads_management") &&
-              response.authResponse.grantedScopes.includes("ads_read")
-            ) {
-              // The user granted both "ad_management" and "ad_read" permissions
-              // Proceed with your ad management logic here
-            } else {
-              // The user did not grant the required permissions
-              console.log("User did not grant required permissions.");
-            }
-          } else {
-            // User canceled login or didn't authorize the app
-            console.log(
-              "User canceled login or did not authorize the app."
-            );
-          }
-        },
-        { scope: "ads_management,ads_read", return_scopes: true }
-      );
+      // window.FB.login(
+      //   function (response) {
+      //     if (response.authResponse) {
+      //       // User has logged in successfully
+      //       // You can perform further actions here, e.g., fetch user data
+      //       console.log("User logged in:", response);
+      //
+      //       // Check if the user granted the required permissions
+      //       if (
+      //         response.authResponse.grantedScopes.includes("ads_management") &&
+      //         response.authResponse.grantedScopes.includes("ads_read")
+      //       ) {
+      //         // The user granted both "ad_management" and "ad_read" permissions
+      //         // Proceed with your ad management logic here
+      //       } else {
+      //         // The user did not grant the required permissions
+      //         console.log("User did not grant required permissions.");
+      //       }
+      //     } else {
+      //       // User canceled login or didn't authorize the app
+      //       console.log(
+      //         "User canceled login or did not authorize the app."
+      //       );
+      //     }
+      //   },
+      //   { scope: "ads_management,ads_read", return_scopes: true }
+      // );
     } catch (error) {
       console.error("Error adding document: ", error);
     }

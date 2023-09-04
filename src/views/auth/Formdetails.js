@@ -4,8 +4,10 @@ import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useHistory } from "react-router-dom";
 
-function FormDetails({ onSubmit }) {
+function FormDetails() {
+  const history = useHistory();
   const [startDate, setStartDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -48,6 +50,7 @@ function FormDetails({ onSubmit }) {
     Cookies.set("startDate",startDate);
     Cookies.set("duration",duration);
     Cookies.set("plateform",platform);
+    history.push("/auth/Thirdpageform");
   };
 
   useEffect(() => {
@@ -137,14 +140,12 @@ function FormDetails({ onSubmit }) {
                     <option value="google">Google</option>
                   </select>
                 </div>
-                <Link to="/auth/Thirdpageform">
                 <button
                   className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
                 >
                   Next
                 </button>
-                </Link>
               </form>
             </div>
           </div>

@@ -33,7 +33,7 @@ ReactDOM.render(
       <Route path="/profile" exact component={Profile} />
       <Route path="/" exact component={Landing} />
       <Route path="/aboutus" exact component={Aboutus} />
-      <Route path="/Adminform" exact component={AdminForm} />
+      <Route path="/adminform" exact component={AdminForm} />
       <Route path="/tableCompare" exact component={TableComparison}/>
       {/* add redirect for first page */}
       <Redirect from="*" to="/" />

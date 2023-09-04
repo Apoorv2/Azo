@@ -14,6 +14,7 @@ export default function Login() {
   const history   = useHistory();
   const generatedOTPTableRef = collection(db, "generatedOTP");
   const userTableRef = collection(db, "users");
+  const userInfoTableRef = collection(db, "userInfo");
   const adminTableRef= collection(db, "admin");
   const countryCode = "+91";
   const generateRecaptcha = ()=>{
@@ -37,9 +38,22 @@ export default function Login() {
   
     if (phone.length === 10) {
       const fullPhoneNumber = countryCode + phone;
-      const q = query(userTableRef, where("phoneNumber", "==", fullPhoneNumber));
+      const q = query(userInfoTableRef, where("phoneNumber", "==", fullPhoneNumber));
       const querySnapshot = await getDocs(q);
-  
+      const qt = query(generatedOTPTableRef, where("phoneNumber", "==", fullPhoneNumber));
+      const querySnapshot1 = await getDocs(qt);
+      if(querySnapshot1.size ===0)
+      {
+          const data = {
+            phoneNumber: fullPhoneNumber
+          };
+          try {
+            const docRef = await addDoc(generatedOTPTableRef, data);
+            console.log("Document added with ID in OTP Generated table: ", docRef.id);
+          } catch (error) {
+            console.error("Error adding document: ", error);
+          }
+      }
       if (querySnapshot.size === 0) {
         if (!otpSent) {
           generateRecaptcha();
@@ -61,6 +75,7 @@ export default function Login() {
                 const user = result.user;
                 Cookies.set("logged_in", true);
                 Cookies.set("uid", user.uid);
+                Cookies.set("phoneNumber",fullPhoneNumber);
   
                 const q1 = query(adminTableRef, where("uid", "==", user.uid));
                 const querySnapshot1 = await getDocs(q1);
@@ -69,34 +84,25 @@ export default function Login() {
                   Cookies.set("isAdmin", true);
                 
   
-                history.push("/auth/adminform");
+                history.push("/adminform");
                 }
+                else {
                 console.log("isAdmin: "+ Cookies.get("isAdmin"));
-                if(user.phoneNumber){
-                const data = {
-                  uid: user.uid,
-                  phoneNumber: fullPhoneNumber
-                };
-                try {
-                  const docRef = await addDoc(userTableRef, data);
-                  console.log("Document added with ID: ", docRef.id);
-                } catch (error) {
-                  console.error("Error adding document: ", error);
+                if(user.phoneNumber) {
+                  const data = {
+                    uid: user.uid,
+                    phoneNumber: fullPhoneNumber
+                  };
+                  try {
+                    const docRef = await addDoc(userTableRef, data);
+                    console.log("Document added with ID: ", docRef.id);
+                    history.push("/auth/choice");
+                  } catch (error) {
+                    console.error("Error adding document: ", error);
+                  }
                 }
               }
-              else {
-                // Verification not done, store the phone number in "generatedOTP" table
-                const data = {
-                  phoneNumber: fullPhoneNumber,
-                };
 
-                try {
-                  const docRef = await addDoc(generatedOTPTableRef, data);
-                  console.log("Document added with ID: ", docRef.id);
-                } catch (error) {
-                  console.error("Error adding document: ", error);
-                }
-              }
               })
               .catch((error) => {
                 console.error(error);
