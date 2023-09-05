@@ -28,20 +28,20 @@ function Choice() {
   const adminTableRef = collection(db, "admin");
   const uid = Cookies.get("uid");
 
-  useEffect(() => {
-    if (!Cookies.get("logged_in")) {
-      history.push("/");
-    } else {
-      // Check if UID is undefined
-      if (uid === undefined || uid == null) {
-        // Render content when UID is undefined
-        return;
-      }
+  // useEffect(() => {
+  //   if (!Cookies.get("logged_in")) {
+  //     history.push("/");
+  //   } else {
+  //     // Check if UID is undefined
+  //     if (uid === undefined || uid == null) {
+  //       // Render content when UID is undefined
+  //       return;
+  //     }
 
-      // Call the async function
-      checkUserInfo(uid, userInfoTableRef, adminTableRef, history);
-    }
-  }, [history, uid, userInfoTableRef, adminTableRef]);
+  //     // Call the async function
+  //     checkUserInfo(uid, userInfoTableRef, adminTableRef, history);
+  //   }
+  // }, [history, uid, userInfoTableRef, adminTableRef]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -60,12 +60,14 @@ function Choice() {
             </div>
             <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
               <form onSubmit={handleFormSubmit}>
+              <Link to ="auth/register">
                 <button
                   className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
                 >
                   Book a call
                 </button>
+                </Link>
                 <Link to="/auth/register">
                   <button
                     className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"

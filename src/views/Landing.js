@@ -1,12 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { useHistory } from "react-router-dom";
 
 import Faq from "./Faq";
 import Navbar from "components/Navbars/AuthNavbar.js";
 import Footer from "components/Footers/Footer.js";
 import TableComparison from "./TableComparison";
 export default function Landing() {
+  const history   = useHistory();
   return (
     <>
       <Navbar transparent />
@@ -34,6 +36,14 @@ export default function Landing() {
                   <p className="mt-4 text-lg text-blueGray-200">
                   No Digital Marketing Expertise required
                   </p>
+                 <button
+                  className="mt-4 bg-transparent border border-white text-white py-2 px-6 rounded-lg hover:bg-white hover:text-blueGray-800 transition-all ease-in-out duration-300"
+                  onClick={() => {
+                    history.push("/auth/login");
+                  }}
+                >
+                  Book a Call
+                </button>
                 </div>
               </div>
             </div>
@@ -84,7 +94,7 @@ export default function Landing() {
                     </div>
                     <h6 className="text-xl font-semibold">Get more low cost leads</h6>
                     <p className="mt-2 mb-4 text-blueGray-500">
-                    Your business, real-time insights – discover, adapt, and conquer your market.
+                    Your business, real-time insights – discover, adapt, excel and conquer your market with the help of AI.
                     </p>
                   </div>
                 </div>
@@ -102,48 +112,8 @@ export default function Landing() {
                   </div>
                 </div>
               </div>
-              <div className="w-full md:w-4/12 px-4 text-center">
-                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
-                  <div className="px-4 py-5 flex-auto">
-                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-lightBlue-400">
-                      <i className="fas fa-retweet"></i>
-                    </div>
-                    <h6 className="text-xl font-semibold">Continuous Optimization</h6>
-                    <p className="mt-2 mb-4 text-blueGray-500">
-                    Optimize, refine, succeed – continuous optimization as your secret sauce.
-                    </p>
-                  </div>
-                </div>
               </div>
-              <div className="w-full md:w-4/12 px-4 text-center">
-                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
-                  <div className="px-4 py-5 flex-auto">
-                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-lightBlue-400">
-                      <i className="fas fa-retweet"></i>
-                    </div>
-                    <h6 className="text-xl font-semibold">AI Enhanced Lead Segmentation</h6>
-                    <p className="mt-2 mb-4 text-blueGray-500">
-                    Let AI do the heavy lifting – achieve laser-focused lead segmentation effortlessly
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="w-full md:w-4/12 px-4 text-center">
-                <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-8 shadow-lg rounded-lg">
-                  <div className="px-4 py-5 flex-auto">
-                    <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-emerald-400">
-                      <i className="fas fa-fingerprint"></i>
-                    </div>
-                    <h6 className="text-xl font-semibold">Customer Support</h6>
-                    <p className="mt-2 mb-4 text-blueGray-500">
-                    Your concerns, our commitment – customer support that truly cares.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
+              
             <div className="flex flex-wrap items-center mt-32">
               <div className="w-full md:w-5/12 px-4 mr-auto ml-auto">
                 <div className="text-blueGray-500 p-3 text-center inline-flex items-center justify-center w-16 h-16 mb-6 shadow-lg rounded-full bg-white">
@@ -187,9 +157,7 @@ export default function Landing() {
                     Try our platform for free for 15 days
                     </h4>
                     <p className="text-md font-light mt-2 text-white">
-                      The Arctic Ocean freezes every winter and much of the
-                      sea-ice then thaws every summer, and that process will
-                      continue whatever happens.
+                    Azo is an AI-powered platform revolutionizing online marketing for businesses. It simplifies ad creation and management for non-experts, while its integrated AI categorizes leads as hot, warm, or cold, enabling personalized strategies. Take control of your ads without the need for an agency.
                     </p>
                   </blockquote>
                 </div>
@@ -304,7 +272,6 @@ export default function Landing() {
         </section>
         <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
-          <TableComparison />
         </div>
       </div>
         <section className="pb-20 relative block bg-blueGray-800">
@@ -332,12 +299,10 @@ export default function Landing() {
             <div className="flex flex-wrap text-center justify-center">
               <div className="w-full lg:w-6/12 px-4">
                 <h2 className="text-4xl font-semibold text-white">
-                  Build something
+                 Get High Qulity Leads
                 </h2>
                 <p className="text-lg leading-relaxed mt-4 mb-4 text-blueGray-400">
-                  Put the potentially record low maximum sea ice extent tihs
-                  year down to low ice. According to the National Oceanic and
-                  Atmospheric Administration, Ted, Scambos.
+                Get High Qulity Leads at low cost, our AI driven platform will work 24*7.
                 </p>
               </div>
             </div>
@@ -359,7 +324,7 @@ export default function Landing() {
                   <i className="fas fa-poll text-xl"></i>
                 </div>
                 <h5 className="text-xl mt-5 font-semibold text-white">
-                  Grow your market
+                  Grow your Business
                 </h5>
                 <p className="mt-2 mb-4 text-blueGray-400">
                   Some quick example text to build on the card title and make up
@@ -371,7 +336,7 @@ export default function Landing() {
                   <i className="fas fa-lightbulb text-xl"></i>
                 </div>
                 <h5 className="text-xl mt-5 font-semibold text-white">
-                  Launch time
+                  AI Powered Marketing
                 </h5>
                 <p className="mt-2 mb-4 text-blueGray-400">
                   Some quick example text to build on the card title and make up
@@ -383,7 +348,7 @@ export default function Landing() {
         </section>
         <section className="relative block py-24 lg:pt-0 bg-blueGray-800">
           <div className="container mx-auto px-4">
-            <div className="flex flex-wrap justify-center lg:-mt-64 -mt-48">
+            <div className="flex flex-wrap justify-center lg:-mt-64 -mt-48">            
               <div className="w-full lg:w-6/12 px-4">
                 <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200">
                   <div className="flex-auto p-5 lg:p-10">
@@ -427,7 +392,7 @@ export default function Landing() {
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="message"
                       >
-                        PhoneNumber
+                        Send Message
                       </label>
                       <textarea
                         rows="4"
@@ -451,7 +416,7 @@ export default function Landing() {
           </div>
         </section>
         <Faq/>
-        <section className="pt-20 pb-48">
+        {/* <section className="pt-20 pb-48">
           <div className="container mx-auto px-4">
             <div className="flex flex-wrap justify-center text-center mb-24">
               <div className="w-full lg:w-6/12 px-4">
@@ -606,7 +571,7 @@ export default function Landing() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </main>
       <Footer />
     </>

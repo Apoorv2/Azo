@@ -1,10 +1,9 @@
 import React, {useState,useEffect} from "react";
 import { authentication ,db } from "../../firebase-config";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
-import { collection , addDoc, query, where, getDocs} from "firebase/firestore";
+import { collection , addDoc, query, where, getDocs, Timestamp} from "firebase/firestore";
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
-import { isNamedExportBindings } from "typescript";
 
 export default function Login() {
   console.log("logged_in: "+Cookies.get("logged_in"));
@@ -35,7 +34,8 @@ export default function Login() {
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    const currentTimeStamp = Timestamp.now();
+    const dataAdditionDate = new Date(currentTimeStamp.seconds * 1000);
     if (phone.length === 10) {
       const fullPhoneNumber = countryCode + phone;
       const q = query(userInfoTableRef, where("phoneNumber", "==", fullPhoneNumber));
@@ -45,7 +45,8 @@ export default function Login() {
       if(querySnapshot1.size ===0)
       {
           const data = {
-            phoneNumber: fullPhoneNumber
+            phoneNumber: fullPhoneNumber,
+            dataAdditionDate:dataAdditionDate
           };
           try {
             const docRef = await addDoc(generatedOTPTableRef, data);
@@ -91,7 +92,8 @@ export default function Login() {
                 if(user.phoneNumber) {
                   const data = {
                     uid: user.uid,
-                    phoneNumber: fullPhoneNumber
+                    phoneNumber: fullPhoneNumber,
+                    dataAdditionDate: dataAdditionDate
                   };
                   try {
                     const docRef = await addDoc(userTableRef, data);
@@ -116,8 +118,6 @@ export default function Login() {
         const uid = userDoc.get("uid"); // Replace "uid" with the actual field name where you store the UID
         Cookies.set("uid", uid);
         history.push("/");
-        // Continue with your existing code...
-        // For example, you can check if the user is an admin and set an "isAdmin" cookie, etc.
       }
     }
   };

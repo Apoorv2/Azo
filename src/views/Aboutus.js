@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from "components/Navbars/AuthNavbar.js";
+import Navbar from "components/Navbars/IndexNavbar.js";
 
 function Aboutus() {
   return (

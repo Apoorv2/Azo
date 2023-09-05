@@ -3,11 +3,14 @@ import { addDoc, collection, doc, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
+import { getStorage, ref, uploadBytes,getDownloadURL } from 'firebase/storage';
 
 function Thirdpageform({ onSubmit }) {
   const history   = useHistory();
+  const storage = getStorage();
   const [locations, setLocations] = useState([""]); // An array to store up to 5 locations
   const [file, setFile] = useState(null);
+  const [fileDownloadURL, setFileDownloadURL] = useState(null);
   const [handleUpload, setHandleUpload] = useState(false);
   const [headline, setHeadline] = useState("");
   const [adDescription, setAdDescription] = useState("");
@@ -27,12 +30,26 @@ function Thirdpageform({ onSubmit }) {
   //     });
   //   }
   // }, []);
-
-  const onFileChange = (e) => {
+  const handleFileChange = async (e) => {
     // Handle the selected file
     setFile(e.target.files[0]);
   };
-
+  useEffect(() => {
+    // Upload and get download URL when 'file' changes
+    const uploadFile = async () => {
+      if (file) {
+        const storageRef = ref(storage, file.name);
+        await uploadBytes(storageRef, file);
+  
+        // Get the download URL of the uploaded file
+        const url = await getDownloadURL(storageRef);
+        setFileDownloadURL(url); // Update the state with the download URL
+      }
+    };
+  
+    uploadFile(); // Call the function when 'file' changes
+  }, [file]); // Listen for changes in 'file'
+  
   const handleHandleUploadChange = (e) => {
     setHandleUpload(e.target.checked);
   };
@@ -83,6 +100,8 @@ function Thirdpageform({ onSubmit }) {
     e.preventDefault();
 
     // Combine the form data
+    const currentTimeStamp = Timestamp.now();
+    const date = new Date(currentTimeStamp.seconds * 1000); // Convert seconds to milliseconds
 
     const adDetails = {
       uid: Cookies.get("uid"),
@@ -95,7 +114,7 @@ function Thirdpageform({ onSubmit }) {
       duration: Cookies.get("duration") || "", // Retrieve from cookies
       platform: Cookies.get("plateform") || "",
       locations: locations.filter((location) => location.trim() !== ""), // Remove empty locations
-      file: file,
+      fileDownloadURL: fileDownloadURL,
       handleUpload: handleUpload,
       headline: headline,
       adDescription: adDescription,
@@ -103,6 +122,7 @@ function Thirdpageform({ onSubmit }) {
       ageGroup: ageGroup,
       gender: gender,
       dailyBudget: dailyBudget,
+      date: date
     };
 
     // Store form data in cookies
@@ -114,6 +134,8 @@ function Thirdpageform({ onSubmit }) {
       const newAdDetailsDocRef = doc(adDetailsCollectionRef);
       const docRef = await addDoc(adDetailsCollectionRef, adDetails);
       console.log("Document added in userInfo with ID: ", docRef.id);
+      console.log("time of data addition: "+ date.toISOString());
+
       history.push("/admin");
 
       // Move the window.FB.login call outside of the Firestore block
@@ -193,7 +215,7 @@ function Thirdpageform({ onSubmit }) {
                   <input
                     type="file"
                     id="file-upload"
-                    onChange={onFileChange}
+                    onChange={handleFileChange}
                     className="hidden"
                   />
                   <label

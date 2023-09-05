@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 function AdminForm() {
   const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [industry, setIndustry] = useState("");
   const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
@@ -18,6 +19,9 @@ function AdminForm() {
 
   const handleNameChange = (e) => {
     setName(e.target.value);
+  };
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
   };
 
   const handleIndustryChange = (e) => {
@@ -124,7 +128,7 @@ function AdminForm() {
               <form onSubmit={handleSubmit}>
                 {currentStep === 1 && (
                   <>
-                    <div className="mb-4">
+                  <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
                         Business Name
                       </label>
@@ -134,6 +138,18 @@ function AdminForm() {
                         placeholder="Enter Business Name"
                         value={name}
                         onChange={handleNameChange}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
+                        phoneNumber
+                      </label>
+                      <input
+                        type="phone"
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
+                        placeholder="Enter Business Name"
+                        value={phoneNumber}
+                        onChange={handlePhoneNumberChange}
                       />
                     </div>
                     <div className="mb-4">
