@@ -42,7 +42,7 @@ export default function Landing() {
                     history.push("/auth/login");
                   }}
                 >
-                  Book a Call
+                  Get Started
                 </button>
                 </div>
               </div>

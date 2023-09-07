@@ -33,7 +33,7 @@ export default function Register() {
 
     if (currentStep === 1) {
       // First step: Save business information
-      if (name.length > 0 && industry.length > 0 && email.length > 0 && url.length > 0) {
+      if (name.length > 0 && industry.length > 0 && email.length > 0) {
         Cookies.set('businessName', name);
         Cookies.set('industry', industry);
         Cookies.set('emailID', email);
@@ -169,10 +169,10 @@ export default function Register() {
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Website Link<span className="text-red-300">*</span>
+                        Website Link
                       </label>
                       <input
-                        type="url"
+                        type="text"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
                         placeholder="Enter Website Link"
                         value={url}

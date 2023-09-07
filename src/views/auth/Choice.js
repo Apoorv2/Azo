@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config";
@@ -27,6 +27,7 @@ function Choice() {
   const userInfoTableRef = collection(db, "userInfo");
   const adminTableRef = collection(db, "admin");
   const uid = Cookies.get("uid");
+  const [showPopup, setShowPopup] = useState(false);
 
   // useEffect(() => {
   //   if (!Cookies.get("logged_in")) {
@@ -45,8 +46,21 @@ function Choice() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-  };
 
+    // if (e.target.name === "bookCallButton") {
+    //   // Show the popup when the "Book a call" button is clicked
+    //   setShowPopup(true);
+      
+    //   // Automatically hide the popup after 5 seconds
+    //   setTimeout(() => {
+    //     setShowPopup(false);
+    //     history.push("/");
+    //   }, 5000);
+
+    //   // You can add additional logic here, such as making API calls to book a call.
+    // } 
+  };
+  console.log("popUp: "+showPopup);
   return (
     <div className="container mx-auto px-4 h-full">
       <div className="flex content-center items-center justify-center h-full">
@@ -60,18 +74,23 @@ function Choice() {
             </div>
             <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
               <form onSubmit={handleFormSubmit}>
-              <Link to ="auth/register">
-                <button
+                <button onClick={() => setShowPopup(true)}
                   className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
+                  name="bookCallButton" // Add a name attribute to identify the button
                 >
                   Book a call
                 </button>
-                </Link>
+                {showPopup && (
+                  <div className="bg-white text-black border rounded p-4 mb-4" style={{ display: 'block' }}>
+                    Our executive will connect with you within 24 hours.
+                  </div>
+                )}
                 <Link to="/auth/register">
                   <button
                     className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                     type="submit"
+                    name="fillFormButton" 
                   >
                     Fill the form
                   </button>

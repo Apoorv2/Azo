@@ -13,6 +13,7 @@ import Register from "views/auth/Register.js";
 import Formdetails from "views/auth/Formdetails";
 import Choice from "views/auth/Choice";
 import Thirdpageform from "views/auth/Thirdpageform";
+import Facebookaccess from "views/auth/facebookaccess";
 export default function Auth() {
   return (
     <>
@@ -31,6 +32,7 @@ export default function Auth() {
             <Route  path="/auth/Formdetails" exact component={Formdetails}/>
             <Route path="/auth/Choice" exact component={Choice}/>
             <Route path="/auth/Thirdpageform" exact component={Thirdpageform}/>
+            <Route path="/auth/facebookaccess" exact component={Facebookaccess}/>
             <Redirect from="/auth" to="/auth/login" />
           </Switch>
           <FooterSmall absolute />

@@ -146,7 +146,7 @@ export default function Navbar(props) {
                   type="button">
                   <i >
                     {
-                      !login ? <div>Get Started</div> : <div>Log out</div>
+                      !login ? <div>Book a Demo</div> : <div>Log out</div>
                     }
                   </i>
                 </button>

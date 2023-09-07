@@ -23,7 +23,7 @@ function Thirdpageform({ onSubmit }) {
   //   // Check if FB object exists (from the SDK)
   //   if (typeof FB !== "undefined") {
   //     window.FB.init({
-  //       appId: "834829788226350",
+  //       appId: "1000730281143859",
   //       cookie: true,
   //       xfbml: true,
   //       version: "v17.0",
@@ -127,25 +127,67 @@ function Thirdpageform({ onSubmit }) {
 
     // Store form data in cookies
     Cookies.set("adDetails", JSON.stringify(adDetails));
-
+    // window.FB.login(
+    //   function (response) {
+    //     if (response.authResponse) {
+    //       // User has logged in successfully
+    //       // You can perform further actions here, e.g., fetch user data
+    //       console.log("User logged in:", response);
+    
+    //       // Check if the user granted the required permissions
+    //       if (
+    //         response.authResponse.grantedScopes.includes("ads_management") &&
+    //         response.authResponse.grantedScopes.includes("ads_read")
+    //       ) {
+    //         // The user granted both "ad_management" and "ad_read" permissions
+    //         // Proceed with your ad management logic here
+    //       } else {
+    //         // The user did not grant the required permissions
+    //         console.log("User did not grant required permissions.");
+    //       }
+    //     } else {
+    //       // User canceled login or didn't authorize the app
+    //       console.log(
+    //         "User canceled login or did not authorize the app."
+    //       );
+    //     }
+    //   },
+    //   // { scope: "ads_management,ads_read", return_scopes: true }
+    //   {
+    //         config_id: '850720150054326',
+    //   }
+         
+    // );
     // Send the adDetails to Firebase Firestore
     try {
+
+
       const adDetailsCollectionRef = collection(db, "userInfo");
       const newAdDetailsDocRef = doc(adDetailsCollectionRef);
       const docRef = await addDoc(adDetailsCollectionRef, adDetails);
       console.log("Document added in userInfo with ID: ", docRef.id);
       console.log("time of data addition: "+ date.toISOString());
 
-      history.push("/admin");
+      history.push("/auth/facebookaccess");
+      // window.FB.login(
+      //   function(response) [
+      //     console.log(response);
+      //   ],
+      //   [
+      //     config_id: '2292538694469732',
+      //     response_type: 'code',
+      //     override_default_response_type: true
+      //   ]
+      // );
 
-      // Move the window.FB.login call outside of the Firestore block
+     // Move the window.FB.login call outside of the Firestore block
       // window.FB.login(
       //   function (response) {
       //     if (response.authResponse) {
       //       // User has logged in successfully
       //       // You can perform further actions here, e.g., fetch user data
       //       console.log("User logged in:", response);
-      //
+      
       //       // Check if the user granted the required permissions
       //       if (
       //         response.authResponse.grantedScopes.includes("ads_management") &&
@@ -164,7 +206,13 @@ function Thirdpageform({ onSubmit }) {
       //       );
       //     }
       //   },
-      //   { scope: "ads_management,ads_read", return_scopes: true }
+      //   // { scope: "ads_management,ads_read", return_scopes: true }
+      //   {
+      //         config_id: '2292538694469732',
+      //         response_type: 'code',
+      //         override_default_response_type: true
+      //   }
+           
       // );
     } catch (error) {
       console.error("Error adding document: ", error);
