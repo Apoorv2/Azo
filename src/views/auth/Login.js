@@ -208,7 +208,7 @@ export default function Login() {
                 </form>
               </div>
             </div>
-            <div className="flex flex-wrap mt-6 relative">
+             <div className="flex flex-wrap mt-6 relative">
             </div>
           </div>
         </div>
