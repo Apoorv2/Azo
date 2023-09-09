@@ -28,6 +28,41 @@ const handleFormSubmit = (e) => {
         // User has logged in successfully
         // You can perform further actions here, e.g., fetch user data
         console.log("User logged in:", response);
+        if (response.status == "connected"){
+          const userAccessToken = response.authResponse.accessToken;
+         
+          const apiVersion = 'v17.0'; // Use the desired API version
+
+// Make a GET request to the /me/adaccounts endpoint
+window.FB.api(`/${apiVersion}/me/adaccounts`, 'GET', { access_token: userAccessToken }, function(response) {
+  if (response && !response.error) {
+    // The response will contain an array of ad accounts associated with the user
+    const adAccounts = response.data;
+
+    if (adAccounts.length > 0) {
+      // Assuming you want to retrieve the first ad account ID
+      const firstAdAccountID = adAccounts[0].id;
+      console.log('Ad Account ID:', firstAdAccountID);
+    } else {
+      console.log('No ad accounts found for the user.');
+    }
+  } else {
+    console.error('Error:', response.error);
+  }
+});
+
+          // window.FB.api("/me/accounts", function (pagesResponse) {
+          //   if (pagesResponse.data) {
+          //     console.log("pageResponse:"+ pagesResponse)
+          //     const pageIds = pagesResponse.data.map((page) => page.id);
+  
+          //     // Log the Page IDs to the console
+          //     console.log("Page IDs:", pageIds);
+          //   } else {
+          //     console.error("Error retrieving user's Pages.");
+          //   }
+          // });
+        }
         const data = {
           uid: Cookies.get("uid"),
           response: response,
@@ -68,7 +103,7 @@ const handleFormSubmit = (e) => {
     },
     // { scope: "ads_management,ads_read", return_scopes: true }
     {
-          config_id: '845744570288594',
+          config_id: '850720150054326',
     }
        
   );
