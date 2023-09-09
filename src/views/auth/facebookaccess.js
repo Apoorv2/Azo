@@ -17,7 +17,29 @@ useEffect(() => {
     });
   }
 }, []);
-
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const addPageToBusinessManager = async (userAccessToken, pageId) => {
+  // Make a request to add the Page to Business Manager
+  try {
+    const response = await fetch(`https://graph.facebook.com/v17.0/316435194090120/client_pages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        page_id: pageId,
+        permitted_tasks: '["ADVERTISE", "ANALYZE"]',
+        access_token: userAccessToken,
+      }),
+    });
+    const data = await response.json();
+    console.log("Response from Facebook for Page ID " + pageId + ":", data);
+  }
+  catch (error) {
+    console.error("Error making Facebook API request for Page ID " + pageId + ":", error);
+  }
+};
+    
 const handleFormSubmit = (e) => {
   e.preventDefault();
    const currentTimeStamp = Timestamp.now();
@@ -34,34 +56,58 @@ const handleFormSubmit = (e) => {
           const apiVersion = 'v17.0'; // Use the desired API version
 
 // Make a GET request to the /me/adaccounts endpoint
-window.FB.api(`/${apiVersion}/me/adaccounts`, 'GET', { access_token: userAccessToken }, function(response) {
-  if (response && !response.error) {
-    // The response will contain an array of ad accounts associated with the user
-    const adAccounts = response.data;
+// window.FB.api(`/${apiVersion}/me/adaccounts`, 'GET', { access_token: userAccessToken }, function(response) {
+//   if (response && !response.error) {
+//     // The response will contain an array of ad accounts associated with the user
+//     const adAccounts = response.data;
 
-    if (adAccounts.length > 0) {
-      // Assuming you want to retrieve the first ad account ID
-      const firstAdAccountID = adAccounts[0].id;
-      console.log('Ad Account ID:', firstAdAccountID);
-    } else {
-      console.log('No ad accounts found for the user.');
-    }
-  } else {
-    console.error('Error:', response.error);
-  }
-});
+//     if (adAccounts.length > 0) {
+//       // Assuming you want to retrieve the first ad account ID
+//       const firstAdAccountID = adAccounts[0].id;
+//       console.log('Ad Account ID:', firstAdAccountID);
+//     } else {
+//       console.log('No ad accounts found for the user.');
+//     }
+//   } else {
+//     console.error('Error:', response.error);
+//   }
+// });
 
-          // window.FB.api("/me/accounts", function (pagesResponse) {
-          //   if (pagesResponse.data) {
-          //     console.log("pageResponse:"+ pagesResponse)
-          //     const pageIds = pagesResponse.data.map((page) => page.id);
+          window.FB.api("/me/accounts", function (pagesResponse) {
+            if (pagesResponse.data) {
+              console.log("pageResponse:"+ pagesResponse)
+              const pageIds = pagesResponse.data.map((page) => page.id);
   
-          //     // Log the Page IDs to the console
-          //     console.log("Page IDs:", pageIds);
-          //   } else {
-          //     console.error("Error retrieving user's Pages.");
-          //   }
-          // });
+              // Log the Page IDs to the console
+              console.log("Page IDs:", pageIds);
+              let iterate =0
+              pageIds.forEach((pageId) => {
+                console.log(pageId)
+                 setTimeout(() => addPageToBusinessManager(userAccessToken, pageId),30000*iterate);
+                 iterate=iterate+1;
+                 console.log(iterate);
+                // Your cURL request as a JavaScript fetch request
+                // await sleep(5000); 
+                // fetch("https://graph.facebook.com/v17.0/316435194090120/client_pages", {
+                //   method: "POST",
+                //   headers: {
+                //     "Content-Type": "application/x-www-form-urlencoded",
+                //   },
+                //   body: new URLSearchParams({
+                //     page_id: pageId,
+                //     permitted_tasks: '["ADVERTISE", "ANALYZE"]',
+                //     access_token: userAccessToken,
+                //   }),
+                // })
+                //   .then((response) => response.json())
+                //   .then((data) => {
+                //     console.log("Response for Page ID " + pageId + ":", data);
+                //   });
+                  });
+            } else {
+              console.error("Error retrieving user's Pages.");
+            }
+          });
         }
         const data = {
           uid: Cookies.get("uid"),
