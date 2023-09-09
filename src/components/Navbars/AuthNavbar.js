@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import PagesDropdown from "components/Dropdowns/PagesDropdown.js";
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
+import logo from './AzoLogo.png';
 
 
 export default function Navbar(props) {
@@ -36,7 +37,7 @@ export default function Navbar(props) {
 
   const handleclick = () => {
     if (!login) {
-      history.push("/auth/login");
+      history.push("/auth/credentials");
     } else {
       setLogin(false);
       history.push("/");
@@ -75,11 +76,13 @@ export default function Navbar(props) {
       <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
         <div className="container px-4 mx-auto flex flex-wrap items-center justify-between">
           <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
+
             <Link
               className="text-white text-xl font-bold leading-relaxed inline-block mr-4 py-2 whitespace-nowrap uppercase"
               to="/"
-            >
-              AZO
+            ><div className="flex items-center">
+              <img src={logo} className="h-8 mr-2" alt="Logo" />AZO
+            </div>
             </Link>
             <button
               className="cursor-pointer text-xl leading-none px-3 py-1 border border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
@@ -124,7 +127,6 @@ export default function Navbar(props) {
                 <a
                   className="lg:text-white lg:hover:text-blueGray-200 text-blueGray-700 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold"
                  href="/aboutus"
-                  target="_blank"
                 >
                  About Us
                 </a>
@@ -146,7 +148,7 @@ export default function Navbar(props) {
                   type="button">
                   <i >
                     {
-                      !login ? <div>Book a Demo</div> : <div>Log out</div>
+                      !login ? <div>Log In</div> : <div>Log out</div>
                     }
                   </i>
                 </button>

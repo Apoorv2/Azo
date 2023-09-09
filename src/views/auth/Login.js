@@ -38,8 +38,7 @@ export default function Login() {
     const dataAdditionDate = new Date(currentTimeStamp.seconds * 1000);
     if (phone.length === 10) {
       const fullPhoneNumber = countryCode + phone;
-      const q = query(userInfoTableRef, where("phoneNumber", "==", fullPhoneNumber));
-      const querySnapshot = await getDocs(q);
+
       const qt = query(generatedOTPTableRef, where("phoneNumber", "==", fullPhoneNumber));
       const querySnapshot1 = await getDocs(qt);
       if(querySnapshot1.size ===0)
@@ -55,7 +54,7 @@ export default function Login() {
             console.error("Error adding document: ", error);
           }
       }
-      if (querySnapshot.size === 0) {
+
         if (!otpSent) {
           generateRecaptcha();
           let appVerifier = window.recaptchaVerifier;
@@ -78,17 +77,17 @@ export default function Login() {
                 Cookies.set("uid", user.uid);
                 Cookies.set("phoneNumber",fullPhoneNumber);
   
-                const q1 = query(adminTableRef, where("uid", "==", user.uid));
-                const querySnapshot1 = await getDocs(q1);
-  
-                if (querySnapshot1.size != 0) {
-                  Cookies.set("isAdmin", true);
-                
-  
-                history.push("/adminform");
-                }
-                else {
-                console.log("isAdmin: "+ Cookies.get("isAdmin"));
+                // const q1 = query(adminTableRef, where("uid", "==", user.uid));
+                // const querySnapshot1 = await getDocs(q1);
+                //
+                // if (querySnapshot1.size != 0) {
+                //   Cookies.set("isAdmin", true);
+                //
+                //
+                // history.push("/adminform");
+                // }
+                // else {
+                //console.log("isAdmin: "+ Cookies.get("isAdmin"));
                 if(user.phoneNumber) {
                   const data = {
                     uid: user.uid,
@@ -98,12 +97,12 @@ export default function Login() {
                   try {
                     const docRef = await addDoc(userTableRef, data);
                     console.log("Document added with ID: ", docRef.id);
-                    history.push("/auth/choice");
+                    history.push("/auth/createPassword");
                   } catch (error) {
                     console.error("Error adding document: ", error);
                   }
                 }
-              }
+              //}
 
               })
               .catch((error) => {
@@ -112,13 +111,7 @@ export default function Login() {
           }
           
         }
-      } else {
-        // Assuming there's only one matching document, get the UID
-        const userDoc = querySnapshot.docs[0];
-        const uid = userDoc.get("uid"); // Replace "uid" with the actual field name where you store the UID
-        Cookies.set("uid", uid);
-        history.push("/");
-      }
+
     }
   };
   

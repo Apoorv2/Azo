@@ -8,7 +8,9 @@ export default function Credentials() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
+  const [errorMessage, setErrorMessage] = useState("");
   const credentialsTableRef = collection(db, "credentials");
+  const adminTableRef= collection(db, "admin");
   const countryCode = "+91";
 
   const handleSubmit = async (e) => {
@@ -30,12 +32,20 @@ export default function Credentials() {
         Cookies.set("logged_in", true);
         Cookies.set("uid", uid);
         Cookies.set("phoneNumber", fullPhoneNumber);
+        const q1 = query(adminTableRef, where("uid", "==", uid));
+        const querySnapshot1 = await getDocs(q1);
 
-        // Redirect to the desired page (e.g., the user dashboard)
-        history.push("/");
+        if (querySnapshot1.size != 0) {
+          Cookies.set("isAdmin", true);
+          history.push("/adminform");
+        }
+        else {
+          // Redirect to the desired page (e.g., the user dashboard)
+          history.push("/");
+        }
       } else {
         // User not found or invalid credentials
-        console.error("Invalid credentials");
+        setErrorMessage("Invalid credentials");
         // You can display an error message to the user if needed
       }
     }
@@ -55,6 +65,11 @@ export default function Credentials() {
               <hr className="mt-6 border-b-1 border-blueGray-300" />
             </div>
             <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+              {errorMessage && (
+                  <div className="text-red-500 text-center mb-4">
+                    {errorMessage}
+                  </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="relative w-full mb-3">
                   <label
@@ -99,18 +114,31 @@ export default function Credentials() {
                   </button>
                 </div>
               </form>
-              <div className="text-center mt-4">
-                {/* Style the "Sign Up" button within a blue box */}
-                <Link to="/signup">
-                  <button className="bg-blueGray-600 text-white active:bg-blue-400 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1">
-                    Sign Up
-                  </button>
-                </Link>
-                {/* Add a link to the "Forgot Password" page */}
-                <Link to="/forgot-password" className="text-blueGray-500 hover:text-blueGray-700">
-                  Forgot Password?
-                </Link>
-              </div>
+              {/*<div className="text-center mt-4">*/}
+              {/*  /!* Style the "Sign Up" button within a blue box *!/*/}
+              {/*  <Link to="/signup">*/}
+              {/*    <button className="bg-blueGray-600 text-white active:bg-blue-400 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1">*/}
+              {/*      Sign Up*/}
+              {/*    </button>*/}
+              {/*  </Link>*/}
+              {/*  /!* Add a link to the "Forgot Password" page *!/*/}
+              {/*  <Link to="/forgot-password" className="text-blueGray-500 hover:text-blueGray-700">*/}
+              {/*    Forgot Password?*/}
+              {/*  </Link>*/}
+              {/*</div>*/}
+            </div>
+          </div>
+          <div className="flex flex-wrap mt-6 relative" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div className="w-1/2">
+              <Link to="/auth/login.js" className="text-blueGray-200">
+                <small>Forgot Password</small>
+              </Link>
+            </div>
+
+            <div className="w-1/2 text-right">
+              <Link to="/auth/login.js" className="text-blueGray-200">
+                <small>Create new account</small>
+              </Link>
             </div>
           </div>
         </div>

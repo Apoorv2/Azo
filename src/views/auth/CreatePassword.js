@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory, Link } from "react-router-dom";
 import { db } from "../../firebase-config";
-import { collection, query, where, getDocs, updateDoc, addDoc } from "firebase/firestore";
+import {collection, query, where, getDocs, updateDoc, addDoc, Timestamp} from "firebase/firestore";
 import Cookies from "js-cookie";
 
 export default function CreatePassword() {
@@ -9,18 +9,21 @@ export default function CreatePassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const history = useHistory();
   const credentailsTableRef = collection(db, "credentials");
-  const countryCode = "+91";
-  const phoneNumber = Cookies.get("phoneNumber");
+  const [errorMessage, setErrorMessage] = useState("");
+  const fullPhoneNumber = Cookies.get("phoneNumber");
+  const userInfoTableRef = collection(db, "userInfo");
+  const uid=Cookies.get("uid");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password === confirmPassword) {
-      const fullPhoneNumber = countryCode + phoneNumber;
 
       // Check if the phone number is already in the table
       const q = query(credentailsTableRef, where("phoneNumber", "==", fullPhoneNumber));
       const querySnapshot = await getDocs(q);
+      const currentTimeStamp = Timestamp.now();
+      const dataAdditionDate = new Date(currentTimeStamp.seconds * 1000);
 
       if (querySnapshot.size === 1) {
         // Update the password for the existing user
@@ -31,14 +34,23 @@ export default function CreatePassword() {
 
         Cookies.set("logged_in", true);
         Cookies.set("uid", uid);
-
+        const q1 = query(userInfoTableRef, where("uid", "==", uid));
+        const querySnapshot1 = await getDocs(q1);
+        if(querySnapshot1.size ===0) {
+          history.push("/auth/choice");
+        }
+        else {
+          history.push("/");
+        }
         // Redirect to the desired page (e.g., the user dashboard)
-        history.push("/dashboard");
+        history.push("/");
       } else {
         // Add a new user with the provided phone number and password
         const newUser = {
           phoneNumber: fullPhoneNumber,
-          password,
+          password: password,
+          uid: uid,
+          dataAdditionDate: dataAdditionDate
           // Add other user data here if needed
         };
 
@@ -48,11 +60,11 @@ export default function CreatePassword() {
         Cookies.set("uid", docRef.id);
 
         // Redirect to the desired page (e.g., the user dashboard)
-        history.push("/");
+        history.push("/auth/choice");
       }
     } else {
-      // Passwords do not match
-      console.error("Passwords do not match");
+      // Passwords do not matchUT
+      setErrorMessage("Passwords do not match");
       // You can display an error message to the user if needed
     }
   };
@@ -71,6 +83,11 @@ export default function CreatePassword() {
               <hr className="mt-6 border-b-1 border-blueGray-300" />
             </div>
             <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
+              {errorMessage && (
+                  <div className="text-red-500 text-center mb-4">
+                    {errorMessage}
+                  </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="relative w-full mb-3">
                   <label
