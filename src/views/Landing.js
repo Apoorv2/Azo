@@ -1,4 +1,8 @@
-import React from "react";
+import React, {useState,useEffect} from "react";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { db } from "../firebase-config";
+import { collection , addDoc, query, where, getDocs, Timestamp} from "firebase/firestore";
 import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
@@ -9,6 +13,38 @@ import Footer from "components/Footers/Footer.js";
 import TableComparison from "./TableComparison";
 export default function Landing() {
   const history   = useHistory();
+  const [businessName, setBusinessName] = useState(""); // State for business name
+  const [phoneNumber, setPhoneNumber] = useState(""); 
+ 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Create a timestamp for the form submission
+    const currentTimeStamp = Timestamp.now();
+
+    // Create an object with the collected data
+    const data = {
+      businessName,
+      phoneNumber,
+      submissionTime: currentTimeStamp,
+    };
+
+    try {
+      // Add the data to the "interestedUsers" collection in Firebase
+      const docRef = await addDoc(collection(db, "interestedUsers"), data);
+
+      // Clear the form fields after successful submission
+      setBusinessName("");
+      setPhoneNumber("");
+
+      console.log("Document added with ID: ", docRef.id);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  };
+
+
+
   return (
     <>
       <Navbar transparent />
@@ -39,7 +75,7 @@ export default function Landing() {
                  <button
                   className="mt-4 bg-transparent border border-white text-white py-2 px-6 rounded-lg hover:bg-white hover:text-blueGray-800 transition-all ease-in-out duration-300"
                   onClick={() => {
-                    history.push("/auth/login");
+                    history.push("/auth/credentials");
                   }}
                 >
                   Get Started
@@ -270,11 +306,44 @@ export default function Landing() {
             </div>
           </div>
         </section>
-        <div className="flex flex-wrap mt-4">
+        {/* <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
         </div>
-      </div>
-        <section className="pb-20 relative block bg-blueGray-800">
+      </div> */}
+      <section className="relative block py-12">
+        <div className="container mx-auto px-4">
+          <h3 className="text-4xl font-semibold text-center mb-8">
+          Listen to Our Clients' Voices
+          </h3>
+          <div className="customer-review-box">
+          <Carousel
+            autoPlay={true}
+            infiniteLoop={true}
+            interval={5000} // Change interval time (in milliseconds) as needed
+            showArrows={true}
+            style={{ zIndex: 1 }}
+          >
+            <div>
+              <p>Initially, I was hesitant to try a new platform for running fb/Insta ads, but I'm glad I did. The customer support team at Azo was incredibly helpful throughout the process. They helped me in running the ads on my own, through the Azo platform and their charges are quite reasonable. No more running after expensive marketing agencies.</p>
+              <p>Preeti Singh
+                La Boutique, Delhi</p>
+            </div>
+            <div>
+              <p>I run a restaurant in Mumbai and had a tight budget for marketing. We wanted an expert marketing agency at low cost, who can use our social media and run ads to reach the target audience. We found Azo, as a smart marketing partner for small businesses like ours to get access to high-quality digital marketing services without breaking the bank. 
+Ramit Katyal</p>
+              <p>Mr. Foodie, Restaurant, Mumbai</p>
+            </div>
+            <div>
+              <p>We run an Aptech education franchise and need a good number of high quality student leads on daily basis. Instead of paying huge amount to Justdial and Sulekha for leads, we are now running our own lead generation campaigns through Azo. This platform is a game-changer for companies looking for low cost lead generation and digital marketing services. Highly recommended!
+              </p>
+              <p>Suraj Rathod
+Aptech, Pune</p>
+            </div>
+          </Carousel>
+          </div>
+        </div>
+      </section>
+        <section className="pb-20 mt-16 relative block bg-blueGray-800">
           <div
             className="bottom-auto top-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden -mt-20 h-20"
             style={{ transform: "translateZ(0)" }}
@@ -299,7 +368,7 @@ export default function Landing() {
             <div className="flex flex-wrap text-center justify-center">
               <div className="w-full lg:w-6/12 px-4">
                 <h2 className="text-4xl font-semibold text-white">
-                 Get High Qulity Leads
+                 Get High Quality Leads
                 </h2>
                 <p className="text-lg leading-relaxed mt-4 mb-4 text-blueGray-400">
                 Get High Qulity Leads at low cost, our AI driven platform will work 24*7.
@@ -315,8 +384,7 @@ export default function Landing() {
                   Excelent Services
                 </h6>
                 <p className="mt-2 mb-4 text-blueGray-400">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                Unlock business success with our excellent services.
                 </p>
               </div>
               <div className="w-full lg:w-3/12 px-4 text-center">
@@ -324,11 +392,10 @@ export default function Landing() {
                   <i className="fas fa-poll text-xl"></i>
                 </div>
                 <h5 className="text-xl mt-5 font-semibold text-white">
-                  Grow your Business
+                  Low Cost Leads
                 </h5>
                 <p className="mt-2 mb-4 text-blueGray-400">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                Say goodbye to lead generation cost concerns with our solutions
                 </p>
               </div>
               <div className="w-full lg:w-3/12 px-4 text-center">
@@ -339,8 +406,7 @@ export default function Landing() {
                   AI Powered Marketing
                 </h5>
                 <p className="mt-2 mb-4 text-blueGray-400">
-                  Some quick example text to build on the card title and make up
-                  the bulk of the card's content.
+                Maximize ROI and grow your business efficiently with AI marketing.
                 </p>
               </div>
             </div>
@@ -359,56 +425,48 @@ export default function Landing() {
                       Complete this form and we will get back to you in 24
                       hours.
                     </p>
-                    <div className="relative w-full mb-3 mt-8">
-                      <label
-                        className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="full-name"
-                      >
-                        Full Name
-                      </label>
-                      <input
-                        type="phone"
-                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        placeholder="Full Name"
-                      />
-                    </div>
+                    <form onSubmit={handleSubmit}>
+                  <div className="relative w-full mb-3 mt-8">
+                    <label
+                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                      htmlFor="business-name"
+                    >
+                      Business Name
+                    </label>
+                    <input
+                      type="text"
+                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      placeholder="Business Name"
+                      value={businessName}
+                      onChange={(e) => setBusinessName(e.target.value)}
+                    />
+                  </div>
 
-                    <div className="relative w-full mb-3">
-                      <label
-                        className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="email"
-                      >
-                        Business Name
-                      </label>
-                      <input
-                        type="text"
-                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                        placeholder="Email"
-                      />
-                    </div>
+                  <div className="relative w-full mb-3">
+                    <label
+                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                      htmlFor="phone-number"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      type="phone"
+                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      placeholder="Phone Number"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                  </div>
 
-                    <div className="relative w-full mb-3">
-                      <label
-                        className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="message"
-                      >
-                        Send Message
-                      </label>
-                      <textarea
-                        rows="4"
-                        cols="80"
-                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        placeholder="Type a message..."
-                      />
-                    </div>
-                    <div className="text-center mt-6">
-                      <button
-                        className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                        type="button"
-                      >
-                        Send Message
-                      </button>
-                    </div>
+                  <div className="text-center mt-6">
+                    <button
+                      className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      type="submit"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
                   </div>
                 </div>
               </div>

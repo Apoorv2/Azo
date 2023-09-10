@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { collection, addDoc, doc, Timestamp } from "firebase/firestore";
+import { authentication ,db } from "../firebase-config";
+import { collection , addDoc, query, where, getDocs, Timestamp} from "firebase/firestore";
 import { Link, useHistory } from "react-router-dom";
 import Cookies from "js-cookie";
 
@@ -16,12 +17,14 @@ function AdminForm() {
   const [platform, setPlatform] = useState("");
   const [currentStep, setCurrentStep] = useState(1); // Manage the current step
   const history = useHistory();
-
+  const userTableRef = collection(db, "users");
+  const countryCode ="+91";
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
   const handlePhoneNumberChange = (e) => {
     setPhoneNumber(e.target.value);
+
   };
 
   const handleIndustryChange = (e) => {
@@ -50,15 +53,26 @@ function AdminForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const clientPhoneNumber= countryCode+ phoneNumber;
     if (currentStep === 1) {
       // First step: Save business information
-      if (name.length > 0 && industry.length > 0 && email.length > 0 && url.length > 0) {
+      if (name.length > 0 && industry.length > 0 && email.length > 0 && phoneNumber.length===10) {
         Cookies.set('businessName', name);
+        Cookies.set('clientPhoneNumber',clientPhoneNumber);
         Cookies.set('industry', industry);
         Cookies.set('emailID', email);
         Cookies.set('website', url);
         
+        const qt = query(userTableRef, where("phoneNumber", "==", clientPhoneNumber));
+        const querySnapshot1 = await getDocs(qt);
+        if (querySnapshot1.size !=0 )
+        {
+          const userDoc = querySnapshot1.docs[0];
+          const clientuUid = userDoc.get("uid");
+          Cookies.set("clientUid",clientuUid);
+        }
+      
+
         // Navigate to the next step
         setCurrentStep(2);
       }
@@ -78,6 +92,7 @@ function AdminForm() {
   useEffect(() => {
     // Retrieve user input data from cookies
     const savedBusinessName = Cookies.get('businessName');
+    const savedClientPhoneNumber = Cookies.get("clientPhoneNumber");
     const savedIndustry = Cookies.get('industry');
     const savedEmail = Cookies.get('emailID');
     const savedWebsite = Cookies.get('website');
@@ -88,6 +103,9 @@ function AdminForm() {
     // Set the input field values with the retrieved data
     if (savedBusinessName) {
       setName(savedBusinessName);
+    }
+    if (savedClientPhoneNumber) {
+      setPhoneNumber(savedClientPhoneNumber);
     }
     if (savedIndustry) {
       setIndustry(savedIndustry);
@@ -130,7 +148,7 @@ function AdminForm() {
                   <>
                   <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Business Name
+                        Client Business Name
                       </label>
                       <input
                         type="text"
@@ -142,12 +160,12 @@ function AdminForm() {
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        phoneNumber
+                        Client phoneNumber
                       </label>
                       <input
                         type="phone"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        placeholder="Enter Business Name"
+                        placeholder="Enter phone Number"
                         value={phoneNumber}
                         onChange={handlePhoneNumberChange}
                       />
@@ -194,7 +212,7 @@ function AdminForm() {
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Email
+                        Client Email
                       </label>
                       <input
                         type="email"

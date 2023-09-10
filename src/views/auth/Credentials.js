@@ -11,6 +11,7 @@ export default function Credentials() {
   const [errorMessage, setErrorMessage] = useState("");
   const credentialsTableRef = collection(db, "credentials");
   const adminTableRef= collection(db, "admin");
+  const userInfoTableRef = collection(db,"userInfo");
   const countryCode = "+91";
 
   const handleSubmit = async (e) => {
@@ -35,9 +36,15 @@ export default function Credentials() {
         const q1 = query(adminTableRef, where("uid", "==", uid));
         const querySnapshot1 = await getDocs(q1);
 
+        const q2 = query(userInfoTableRef, where("uid", "==", uid));
+        const querySnapshot2 = await getDocs(q2);
         if (querySnapshot1.size != 0) {
           Cookies.set("isAdmin", true);
           history.push("/adminform");
+        } 
+        else if (querySnapshot2.size==0)
+        {
+          history.push("/auth/choice");
         }
         else {
           // Redirect to the desired page (e.g., the user dashboard)

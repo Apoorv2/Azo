@@ -102,8 +102,32 @@ function Thirdpageform({ onSubmit }) {
     // Combine the form data
     const currentTimeStamp = Timestamp.now();
     const date = new Date(currentTimeStamp.seconds * 1000); // Convert seconds to milliseconds
-
-    const adDetails = {
+    let adDetails = null;
+    if(Cookies.get("isAdmin")){
+      adDetails = {
+        uid: Cookies.get("clientUid"),
+        phoneNumber: Cookies.get("clientPhoneNumber"),
+        businessName: Cookies.get("businessName") || "", // Retrieve from cookies
+        industry: Cookies.get("industry") || "", // Retrieve from cookies
+        emailID: Cookies.get("emailID") || "", // Retrieve from cookies
+        website: Cookies.get("website") || "", // Retrieve from cookies
+        startDate: Cookies.get("startDate") || "", // Retrieve from cookies
+        duration: Cookies.get("duration") || "", // Retrieve from cookies
+        platform: Cookies.get("plateform") || "",
+        locations: locations.filter((location) => location.trim() !== ""), // Remove empty locations
+        fileDownloadURL: fileDownloadURL,
+        handleUpload: handleUpload,
+        headline: headline,
+        adDescription: adDescription,
+        cta: cta,
+        ageGroup: ageGroup,
+        gender: gender,
+        dailyBudget: dailyBudget,
+        date: date
+      };
+    }
+    else{
+     adDetails = {
       uid: Cookies.get("uid"),
       phoneNumber: Cookies.get("phoneNumber"),
       businessName: Cookies.get("businessName") || "", // Retrieve from cookies
@@ -124,6 +148,7 @@ function Thirdpageform({ onSubmit }) {
       dailyBudget: dailyBudget,
       date: date
     };
+  }
 
     // Store form data in cookies
     Cookies.set("adDetails", JSON.stringify(adDetails));

@@ -13,7 +13,7 @@ export default function Login() {
   const history   = useHistory();
   const generatedOTPTableRef = collection(db, "generatedOTP");
   const userTableRef = collection(db, "users");
-  const userInfoTableRef = collection(db, "userInfo");
+  const credentialsTableRef = collection(db, "credentials");
   const adminTableRef= collection(db, "admin");
   const countryCode = "+91";
   const generateRecaptcha = ()=>{
