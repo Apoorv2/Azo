@@ -42,8 +42,6 @@ export default function CreatePassword() {
         else {
           history.push("/");
         }
-        // Redirect to the desired page (e.g., the user dashboard)
-        history.push("/");
       } else {
         // Add a new user with the provided phone number and password
         const newUser = {

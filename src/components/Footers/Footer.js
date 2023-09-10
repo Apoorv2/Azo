@@ -1,5 +1,5 @@
 import React from "react";
-
+import {Link} from "react-router-dom";
 export default function Footer() {
   return (
     <>
@@ -28,27 +28,31 @@ export default function Footer() {
             <div className="w-full lg:w-6/12 px-4">
               <h4 className="text-3xl font-semibold">Let's keep in touch!</h4>
               <h5 className="text-lg mt-0 mb-2 text-blueGray-600">
-                Find us on any of these platforms, we respond within 1 business days.
+                Azo (registered as Urban Serv Express Pvt. Ltd.)
+                CIN U74140DL2015PTC283749
+                D10/6, First Floor, Ardee City, Sector 52, Gurugram, Haryana 122003
+                Phone: 8287350714
+                Support@azoapp.in
               </h5>
-              {/* <div className="mt-6 lg:mb-0 mb-6">
-                <button
-                  className="bg-white text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
-                  type="button"
-                >
-                  <i className="fab fa-twitter"></i>
-                </button>
-                <button
-                  className="bg-white text-lightBlue-600 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
-                  type="button"
-                >
-                  <i className="fab fa-facebook-square"></i>
-                </button>
-                <button */}
-                  {/* className="bg-white text-pink-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"
-                  type="button"
-                >
-                  <i className="fab fa-dribbble"></i>
-                </button> */}
+               <div className="mt-6 lg:mb-0 mb-6">
+                {/*<button*/}
+                {/*  className="bg-white text-lightBlue-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"*/}
+                {/*  type="button"*/}
+                {/*>*/}
+                {/*  <i className="fab fa-twitter"></i>*/}
+                {/*</button>*/}
+                {/*<button*/}
+                {/*  className="bg-white text-lightBlue-600 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"*/}
+                {/*  type="button"*/}
+                {/*>*/}
+                {/*  <i className="fab fa-facebook-square"></i>*/}
+                {/*</button>*/}
+                {/*<button*/}
+                {/*   className="bg-white text-pink-400 shadow-lg font-normal h-10 w-10 items-center justify-center align-center rounded-full outline-none focus:outline-none mr-2"*/}
+                {/*  type="button"*/}
+                {/*>*/}
+                {/*  <i className="fab fa-dribbble"></i>*/}
+                {/*</button>*/}
               </div>
             </div>
             <div className="w-full lg:w-6/12 px-4">
@@ -94,17 +98,19 @@ export default function Footer() {
                     <li>
                       <a
                         className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
-                        href="https://docs.google.com/document/d/1tTrDIS_CC81ddq36lQVx7i_qDQLZNEwb/"
-                      >
+
+                      ><Link to={"/privacypolicy"}>
                         Privacy Policy
+                      </Link>
                       </a>
                     </li>
                     <li>
                       <a
                         className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
                         
-                      >
+                      ><Link to={"/auth/credentails"}>
                         Contact Us
+                      </Link>
                       </a>
                     </li>
                   </ul>
@@ -118,12 +124,12 @@ export default function Footer() {
               <div className="text-sm text-blueGray-500 font-semibold py-1">
                 Copyright © {new Date().getFullYear()} AZO Powered by{" "}
                 <a
-                  href="https://www.creative-tim.com?ref=nr-footer"
-                  className="text-blueGray-500 hover:text-blueGray-800"
+
+                  className="text-blueGray-500 "
                 >
                 Urban Serv Express Pvt. Ltd.
                 </a>
-                .
+
               </div>
             </div>
           </div>
