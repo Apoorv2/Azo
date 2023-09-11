@@ -9,6 +9,7 @@ import "assets/styles/tailwind.css";
 import Admin from "layouts/Admin.js";
 import Auth from "layouts/Auth.js";
 import PrivacyPolicy from "views/PrivacyPolicy.js";
+import TandC from "views/TandC.js";
 
 // views without layouts
 
@@ -35,6 +36,7 @@ ReactDOM.render(
       <Route path="/" exact component={Landing} />
       <Route path="/aboutus" exact component={Aboutus} />
       <Route path="/privacypolicy" exact component={PrivacyPolicy} />
+      <Route path="/tandc" exact component={TandC} />
       <Route path="/adminform" exact component={AdminForm} />
       <Route path="/tableCompare" exact component={TableComparison}/>
       {/* add redirect for first page */}

@@ -92,7 +92,9 @@ export default function Footer() {
                         className="text-blueGray-600 hover:text-blueGray-800 font-semibold block pb-2 text-sm"
                         href="https://docs.google.com/document/d/1bRR52G7A7B7O5aXuM_l5RC0SFRP0y_wn/"
                       >
+                        <Link to={"/tandc"}>
                         Terms & Conditions
+                        </Link>
                       </a>
                     </li>
                     <li>
