@@ -109,7 +109,7 @@ function Thirdpageform({ onSubmit }) {
         phoneNumber: Cookies.get("clientPhoneNumber"),
         businessName: Cookies.get("businessName") || "", // Retrieve from cookies
         industry: Cookies.get("industry") || "", // Retrieve from cookies
-        emailID: Cookies.get("emailID") || "", // Retrieve from cookies
+        //emailID: Cookies.get("emailID") || "", // Retrieve from cookies
         website: Cookies.get("website") || "", // Retrieve from cookies
         startDate: Cookies.get("startDate") || "", // Retrieve from cookies
         duration: Cookies.get("duration") || "", // Retrieve from cookies
@@ -132,7 +132,7 @@ function Thirdpageform({ onSubmit }) {
       phoneNumber: Cookies.get("phoneNumber"),
       businessName: Cookies.get("businessName") || "", // Retrieve from cookies
       industry: Cookies.get("industry") || "", // Retrieve from cookies
-      emailID: Cookies.get("emailID") || "", // Retrieve from cookies
+      //emailID: Cookies.get("emailID") || "", // Retrieve from cookies
       website: Cookies.get("website") || "", // Retrieve from cookies
       startDate: Cookies.get("startDate") || "", // Retrieve from cookies
       duration: Cookies.get("duration") || "", // Retrieve from cookies

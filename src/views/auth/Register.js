@@ -7,7 +7,7 @@ import { db } from "../../firebase-config";
 export default function Register() {
   const [name, setName] = useState("");
   const [industry, setIndustry] = useState("");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
   const [currentStep, setCurrentStep] = useState(1); // Manage the current step
   const history = useHistory();
@@ -20,9 +20,9 @@ export default function Register() {
     setIndustry(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  // const handleEmailChange = (e) => {
+  //   setEmail(e.target.value);
+  // };
 
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
@@ -33,10 +33,10 @@ export default function Register() {
 
     if (currentStep === 1) {
       // First step: Save business information
-      if (name.length > 0 && industry.length > 0 && email.length > 0) {
+      if (name.length > 0 && industry.length > 0 ) {
         Cookies.set('businessName', name);
         Cookies.set('industry', industry);
-        Cookies.set('emailID', email);
+        //Cookies.set('emailID', email);
         Cookies.set('website', url);
         // const Uid = Cookies.get("uid");
         // const PhoneNumber = Cookies.get("phoneNumber");
@@ -64,7 +64,7 @@ export default function Register() {
     // Retrieve user input data from cookies
     const savedBusinessName = Cookies.get('businessName');
     const savedIndustry = Cookies.get('industry');
-    const savedEmail = Cookies.get('emailID');
+    // const savedEmail = Cookies.get('emailID');
     const savedWebsite = Cookies.get('website');
   
     // Set the input field values with the retrieved data
@@ -74,9 +74,9 @@ export default function Register() {
     if (savedIndustry) {
       setIndustry(savedIndustry);
     }
-    if (savedEmail) {
-      setEmail(savedEmail);
-    }
+    // if (savedEmail) {
+    //   setEmail(savedEmail);
+    // }
     if (savedWebsite) {
       setUrl(savedWebsite);
     }
@@ -155,18 +155,18 @@ export default function Register() {
 </select>
 
                     </div>
-                    <div className="mb-4">
-                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Email <span className="text-red-300">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        placeholder="Enter Email"
-                        value={email}
-                        onChange={handleEmailChange}
-                      />
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*  <label className="block text-blueGray-600 text-sm font-bold mb-2">*/}
+                    {/*    Email <span className="text-red-300">*</span>*/}
+                    {/*  </label>*/}
+                    {/*  <input*/}
+                    {/*    type="email"*/}
+                    {/*    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"*/}
+                    {/*    placeholder="Enter Email"*/}
+                    {/*    value={email}*/}
+                    {/*    onChange={handleEmailChange}*/}
+                    {/*  />*/}
+                    {/*</div>*/}
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
                         Website Link

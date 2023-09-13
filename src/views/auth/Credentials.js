@@ -137,13 +137,13 @@ export default function Credentials() {
           </div>
           <div className="flex flex-wrap mt-6 relative" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <div className="w-1/2">
-              <Link to="/auth/login.js" className="text-blueGray-200">
+              <Link to="/auth/forgotPassword" className="text-blueGray-200">
                 <small>Forgot Password</small>
               </Link>
             </div>
 
             <div className="w-1/2 text-right">
-              <Link to="/auth/login.js" className="text-blueGray-200">
+              <Link to="/auth/login" className="text-blueGray-200">
                 <small>Create new account</small>
               </Link>
             </div>
