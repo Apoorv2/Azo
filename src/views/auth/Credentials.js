@@ -26,12 +26,14 @@ export default function Credentials() {
       );
       const querySnapshot = await getDocs(q);
 
-      if (querySnapshot.size === 1) {
+      if (querySnapshot.size > 0) {
         // User found with the provided phone number and password
         const userDoc = querySnapshot.docs[0];
-        const uid = userDoc.get("uid"); // Replace "uid" with the actual field name where you store the UID
+        const uid = userDoc.get("uid");
+        // Replace "uid" with the actual field name where you store the UID
         Cookies.set("logged_in", true);
         Cookies.set("uid", uid);
+        console.log("getuid"+Cookies.get("uid"));
         Cookies.set("phoneNumber", fullPhoneNumber);
         const q1 = query(adminTableRef, where("uid", "==", uid));
         const querySnapshot1 = await getDocs(q1);
@@ -44,7 +46,9 @@ export default function Credentials() {
         } 
         else if (querySnapshot2.size==0)
         {
+          Cookies.set("isAdmin", false);
           history.push("/auth/choice");
+
         }
         else {
           // Redirect to the desired page (e.g., the user dashboard)

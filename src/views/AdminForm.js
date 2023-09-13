@@ -8,7 +8,6 @@ function AdminForm() {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [industry, setIndustry] = useState("");
-  const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
   const [startDate, setStartDate] = useState(
     new Date().toISOString().split("T")[0]
@@ -29,10 +28,6 @@ function AdminForm() {
 
   const handleIndustryChange = (e) => {
     setIndustry(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
   };
 
   const handleUrlChange = (e) => {
@@ -56,11 +51,10 @@ function AdminForm() {
     const clientPhoneNumber= countryCode+ phoneNumber;
     if (currentStep === 1) {
       // First step: Save business information
-      if (name.length > 0 && industry.length > 0 && email.length > 0 && phoneNumber.length===10) {
+      if (name.length > 0 && industry.length > 0 && phoneNumber.length===10) {
         Cookies.set('businessName', name);
         Cookies.set('clientPhoneNumber',clientPhoneNumber);
         Cookies.set('industry', industry);
-        Cookies.set('emailID', email);
         Cookies.set('website', url);
         
         const qt = query(userTableRef, where("phoneNumber", "==", clientPhoneNumber));
@@ -68,10 +62,9 @@ function AdminForm() {
         if (querySnapshot1.size !=0 )
         {
           const userDoc = querySnapshot1.docs[0];
-          const clientuUid = userDoc.get("uid");
-          Cookies.set("clientUid",clientuUid);
+          const clientUid = userDoc.get("uid");
+          Cookies.set("clientUid",clientUid);
         }
-      
 
         // Navigate to the next step
         setCurrentStep(2);
@@ -94,7 +87,6 @@ function AdminForm() {
     const savedBusinessName = Cookies.get('businessName');
     const savedClientPhoneNumber = Cookies.get("clientPhoneNumber");
     const savedIndustry = Cookies.get('industry');
-    const savedEmail = Cookies.get('emailID');
     const savedWebsite = Cookies.get('website');
     const savedStartDate = Cookies.get('startDate');
     const savedDuration = Cookies.get('duration');
@@ -110,9 +102,7 @@ function AdminForm() {
     if (savedIndustry) {
       setIndustry(savedIndustry);
     }
-    if (savedEmail) {
-      setEmail(savedEmail);
-    }
+
     if (savedWebsite) {
       setUrl(savedWebsite);
     }
@@ -209,18 +199,6 @@ function AdminForm() {
   <option value="Travel and Tourism">Travel and Tourism</option>
   <option value="Others">Others</option>
                       </select>
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Client Email
-                      </label>
-                      <input
-                        type="email"
-                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        placeholder="Enter Email"
-                        value={email}
-                        onChange={handleEmailChange}
-                      />
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">

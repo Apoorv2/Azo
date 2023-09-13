@@ -63,9 +63,9 @@ export default function CreatePassword() {
         };
 
         const docRef = await addDoc(credentailsTableRef, newUser);
-
+       // const uid = docRef.get("uid");
         Cookies.set("logged_in", true);
-        Cookies.set("uid", docRef.id);
+       // Cookies.set("uid", uid);
 
         // Redirect to the desired page (e.g., the user dashboard)
         history.push("/auth/choice");

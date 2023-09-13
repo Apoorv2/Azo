@@ -40,7 +40,7 @@ export default function ForgotPassword() {
             );
             const querySnapshot = await getDocs(q);
             //console.log(querySnapshot);
-            if (querySnapshot.size === 1) {
+            if (querySnapshot.size > 0 ) {
                 const userDoc = querySnapshot.docs[0];
                 // const user_email = userDoc.get("email");
                 let templateParams = {

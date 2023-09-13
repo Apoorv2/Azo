@@ -43,7 +43,10 @@ function Choice() {
   //     checkUserInfo(uid, userInfoTableRef, adminTableRef, history);
   //   }
   // }, [history, uid, userInfoTableRef, adminTableRef]);
-
+ const handleCall = (e) => {
+   setShowPopup(true);
+   setTimeout(() => setShowPopup(false ),5000);
+ }
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
@@ -74,7 +77,7 @@ function Choice() {
             </div>
             <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
               <form onSubmit={handleFormSubmit}>
-                <button onClick={() => setShowPopup(true)}
+                <button onClick={handleCall}
                   className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
                   name="bookCallButton" // Add a name attribute to identify the button

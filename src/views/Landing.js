@@ -14,18 +14,22 @@ import TableComparison from "./TableComparison";
 export default function Landing() {
   const history   = useHistory();
   const [businessName, setBusinessName] = useState(""); // State for business name
-  const [phoneNumber, setPhoneNumber] = useState(""); 
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
  const [showPopup, setShowPopup] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+   if (phoneNumber.length != 10 )
+       {
+          setErrorMessage("Phone Number should be of 10 Digit")
+       }
+   else {
 
-    if (businessName !== '' || phoneNumber !== '') {
           setShowPopup(true);
-        }
-
+          setTimeout(() => setShowPopup(false ),5000);
+        setErrorMessage("");
     // Create a timestamp for the form submission
     const currentTimeStamp = Timestamp.now();
-
     // Create an object with the collected data
     const data = {
       businessName,
@@ -44,6 +48,7 @@ export default function Landing() {
       console.log("Document added with ID: ", docRef.id);
     } catch (error) {
       console.error("Error adding document: ", error);
+    }
     }
   };
 
@@ -435,6 +440,11 @@ export default function Landing() {
                     </p>
                     <form onSubmit={handleSubmit}>
                   <div className="relative w-full mb-3 mt-8">
+                    {errorMessage && (
+                        <div className="text-red-500 text-center mb-4">
+                          {errorMessage}
+                        </div>
+                    )}
                     <label
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="business-name"

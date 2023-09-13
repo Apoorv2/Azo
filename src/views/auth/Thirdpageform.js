@@ -99,56 +99,45 @@ function Thirdpageform({ onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+   console.log("isAdmin: "+Cookies.get("isAdmin"));
+   console.log("uid: "+Cookies.get("uid") );
+   console.log("clientuid: "+ Cookies.get("clientUid") );
     // Combine the form data
     const currentTimeStamp = Timestamp.now();
     const date = new Date(currentTimeStamp.seconds * 1000); // Convert seconds to milliseconds
-    let adDetails = null;
-    if(Cookies.get("isAdmin")){
-      adDetails = {
-        uid: Cookies.get("clientUid"),
-        phoneNumber: Cookies.get("clientPhoneNumber"),
-        businessName: Cookies.get("businessName") || "", // Retrieve from cookies
-        industry: Cookies.get("industry") || "", // Retrieve from cookies
-        //emailID: Cookies.get("emailID") || "", // Retrieve from cookies
-        website: Cookies.get("website") || "", // Retrieve from cookies
-        startDate: Cookies.get("startDate") || "", // Retrieve from cookies
-        duration: Cookies.get("duration") || "", // Retrieve from cookies
-        platform: Cookies.get("plateform") || "",
-        locations: locations.filter((location) => location.trim() !== ""), // Remove empty locations
-        fileDownloadURL: fileDownloadURL,
-        handleUpload: handleUpload,
-        headline: headline,
-        adDescription: adDescription,
-        cta: cta,
-        ageGroup: ageGroup,
-        gender: gender,
-        dailyBudget: dailyBudget,
-        date: date
-      };
-    }
-    else{
-     adDetails = {
-      uid: Cookies.get("uid"),
-      phoneNumber: Cookies.get("phoneNumber"),
-      businessName: Cookies.get("businessName") || "", // Retrieve from cookies
-      industry: Cookies.get("industry") || "", // Retrieve from cookies
-      //emailID: Cookies.get("emailID") || "", // Retrieve from cookies
-      website: Cookies.get("website") || "", // Retrieve from cookies
-      startDate: Cookies.get("startDate") || "", // Retrieve from cookies
-      duration: Cookies.get("duration") || "", // Retrieve from cookies
-      platform: Cookies.get("plateform") || "",
-      locations: locations.filter((location) => location.trim() !== ""), // Remove empty locations
-      fileDownloadURL: fileDownloadURL,
-      handleUpload: handleUpload,
-      headline: headline,
-      adDescription: adDescription,
-      cta: cta,
-      ageGroup: ageGroup,
-      gender: gender,
-      dailyBudget: dailyBudget,
-      date: date
-    };
-  }
+     let uid = Cookies.get("uid");
+     let phoneNumber = Cookies.get("phoneNumber")
+     if ( Cookies.get("isAdmin") === true )
+     {
+       uid = Cookies.get("clientUid");
+       phoneNumber = Cookies.get("clientPhoneNumber");
+     }
+
+    //const phoneNumber = Cookies.get("isAdmin") ? Cookies.get("clientPhoneNumber") : Cookies.get("phoneNumber");
+    //console.log("uid in thirdform: "+ uid);
+    const adDetails = {
+    uid: uid ,
+    phoneNumber: phoneNumber,
+    businessName: Cookies.get("businessName") || "",
+    industry: Cookies.get("industry") || "",
+    website: Cookies.get("website") || "",
+    startDate: Cookies.get("startDate") || "",
+    duration: Cookies.get("duration") || "",
+    platform: Cookies.get("plateform") || "",
+    locations: locations.filter((location) => location.trim() !== ""),
+    fileDownloadURL: fileDownloadURL || "", // Set a default value here
+    handleUpload: handleUpload || "", // Set a default value here
+    headline: headline || "", // Set a default value here
+    adDescription: adDescription || "", // Set a default value here
+    cta: cta || "", // Set a default value here
+    ageGroup: ageGroup || "", // Set a default value here
+    gender: gender || "", // Set a default value here
+    dailyBudget: dailyBudget || "", // Set a default value here
+    date: date || "", // Set a default value here
+  };
+
+
+console.log("adDetails: "+ adDetails);
 
     // Store form data in cookies
     Cookies.set("adDetails", JSON.stringify(adDetails));
