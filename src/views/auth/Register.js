@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { ReactSession } from "react-client-session";
+import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
 import { db } from "../../firebase-config";
 
 export default function Register() {
   const [name, setName] = useState("");
   const [industry, setIndustry] = useState("");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [url, setUrl] = useState("");
   const [currentStep, setCurrentStep] = useState(1); // Manage the current step
   const history = useHistory();
@@ -20,9 +20,9 @@ export default function Register() {
     setIndustry(e.target.value);
   };
 
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  // const handleEmailChange = (e) => {
+  //   setEmail(e.target.value);
+  // };
 
   const handleUrlChange = (e) => {
     setUrl(e.target.value);
@@ -33,18 +33,22 @@ export default function Register() {
 
     if (currentStep === 1) {
       // First step: Save business information
-      if (name.length > 0 && industry.length > 0 && email.length > 0 && url.length > 0) {
-        const Uid = ReactSession.get("uid");
-        const PhoneNumber = ReactSession.get("phoneNumber");
-        const userTableRef = collection(db, "users");
-        await addDoc(userTableRef, {
-          uid: Uid,
-          phoneNumber: PhoneNumber,
-          businessName: name,
-          industry: industry,
-          emailID: email,
-          website: url,
-        });
+      if (name.length > 0 && industry.length > 0 ) {
+        Cookies.set('businessName', name);
+        Cookies.set('industry', industry);
+        //Cookies.set('emailID', email);
+        Cookies.set('website', url);
+        // const Uid = Cookies.get("uid");
+        // const PhoneNumber = Cookies.get("phoneNumber");
+        // const userTableRef = collection(db, "users");
+        // await addDoc(userTableRef, {
+        //   uid: Uid,
+        //   phoneNumber: PhoneNumber,
+        //   businessName: name,
+        //   industry: industry,
+        //   emailID: email,
+        //   website: url,
+        // });
 
         // Navigate to the next step
         setCurrentStep(2);
@@ -55,6 +59,29 @@ export default function Register() {
       history.push("/auth/Thirdpageform");
     }
   };
+
+  useEffect(() => {
+    // Retrieve user input data from cookies
+    const savedBusinessName = Cookies.get('businessName');
+    const savedIndustry = Cookies.get('industry');
+    // const savedEmail = Cookies.get('emailID');
+    const savedWebsite = Cookies.get('website');
+  
+    // Set the input field values with the retrieved data
+    if (savedBusinessName) {
+      setName(savedBusinessName);
+    }
+    if (savedIndustry) {
+      setIndustry(savedIndustry);
+    }
+    // if (savedEmail) {
+    //   setEmail(savedEmail);
+    // }
+    if (savedWebsite) {
+      setUrl(savedWebsite);
+    }
+  }, []);
+  
 
   return (
     <>
@@ -77,7 +104,7 @@ export default function Register() {
                   <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Business Name
+                        Business Name <span className="text-red-300">*</span>
                       </label>
                       <input
                         type="text"
@@ -89,7 +116,7 @@ export default function Register() {
                     </div>
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Industry
+                        Industry <span className="text-red-300">*</span>
                       </label>
                       <select
                     id="industry"
@@ -99,53 +126,53 @@ export default function Register() {
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                   >
                     <option value="">Select Industry</option>
-  <option value="Automobile">Automobile</option>
-  <option value="Banking and Finance">Banking and Finance</option>
-  <option value="Education and Training">Education and Training</option>
-  <option value="Events and Entertainment">Events and Entertainment</option>
-  <option value="Fashion and Lifestyle">Fashion and Lifestyle</option>
-  <option value="Fitness and Health">Fitness and Health</option>
-  <option value="Food and Restaurant">Food and Restaurant</option>
-  <option value="Healthcare">Healthcare</option>
-  <option value="Home Decor and Construction">Home Decor and Construction</option>
-  <option value="Hospitality">Hospitality</option>
-  <option value="Insurance">Insurance</option>
-  <option value="Marketing/ Advertising/ Agency">Marketing/ Advertising/ Agency</option>
-  <option value="Marketplaces">Marketplaces</option>
-  <option value="NonProfit">NonProfit</option>
-  <option value="Social Enterprise">Social Enterprise</option>
-  <option value="Online Digital Business">Online Digital Business</option>
-  <option value="Professional Services">Professional Services</option>
-  <option value="Real Estate">Real Estate</option>
-  <option value="Retail">Retail</option>
-  <option value="E-commerce">E-commerce</option>
-  <option value="SaaS">SaaS</option>
-  <option value="Software/ IT/ ITES">Software/ IT/ ITES</option>
-  <option value="Telecom">Telecom</option>
-  <option value="Transportation and Logistics">Transportation and Logistics</option>
-  <option value="Travel and Tourism">Travel and Tourism</option>
-  <option value="Others">Others</option>
+                    <option value="Automobile">Automobile</option>
+                    <option value="Banking and Finance">Banking and Finance</option>
+                    <option value="Education and Training">Education and Training</option>
+                    <option value="Events and Entertainment">Events and Entertainment</option>
+                    <option value="Fashion and Lifestyle">Fashion and Lifestyle</option>
+                    <option value="Fitness and Health">Fitness and Health</option>
+                    <option value="Food and Restaurant">Food and Restaurant</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Home Decor and Construction">Home Decor and Construction</option>
+                    <option value="Hospitality">Hospitality</option>
+                    <option value="Insurance">Insurance</option>
+                    <option value="Marketing/ Advertising/ Agency">Marketing/ Advertising/ Agency</option>
+                    <option value="Marketplaces">Marketplaces</option>
+                    <option value="NonProfit">NonProfit</option>
+                    <option value="Social Enterprise">Social Enterprise</option>
+                    <option value="Online Digital Business">Online Digital Business</option>
+                    <option value="Professional Services">Professional Services</option>
+                    <option value="Real Estate">Real Estate</option>
+                    <option value="Retail">Retail</option>
+                    <option value="E-commerce">E-commerce</option>
+                    <option value="SaaS">SaaS</option>
+                    <option value="Software/ IT/ ITES">Software/ IT/ ITES</option>
+                    <option value="Telecom">Telecom</option>
+                    <option value="Transportation and Logistics">Transportation and Logistics</option>
+                    <option value="Travel and Tourism">Travel and Tourism</option>
+                    <option value="Others">Others</option>
 </select>
 
                     </div>
-                    <div className="mb-4">
-                      <label className="block text-blueGray-600 text-sm font-bold mb-2">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
-                        placeholder="Enter Email"
-                        value={email}
-                        onChange={handleEmailChange}
-                      />
-                    </div>
+                    {/*<div className="mb-4">*/}
+                    {/*  <label className="block text-blueGray-600 text-sm font-bold mb-2">*/}
+                    {/*    Email <span className="text-red-300">*</span>*/}
+                    {/*  </label>*/}
+                    {/*  <input*/}
+                    {/*    type="email"*/}
+                    {/*    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"*/}
+                    {/*    placeholder="Enter Email"*/}
+                    {/*    value={email}*/}
+                    {/*    onChange={handleEmailChange}*/}
+                    {/*  />*/}
+                    {/*</div>*/}
                     <div className="mb-4">
                       <label className="block text-blueGray-600 text-sm font-bold mb-2">
                         Website Link
                       </label>
                       <input
-                        type="url"
+                        type="text"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full"
                         placeholder="Enter Website Link"
                         value={url}

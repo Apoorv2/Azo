@@ -13,6 +13,10 @@ import Register from "views/auth/Register.js";
 import Formdetails from "views/auth/Formdetails";
 import Choice from "views/auth/Choice";
 import Thirdpageform from "views/auth/Thirdpageform";
+import Facebookaccess from "views/auth/facebookaccess";
+import Credentials from "views/auth/Credentials";
+import CreatePassword from "views/auth/CreatePassword";
+import ForgotPassword from "../views/auth/ForgotPassword";
 export default function Auth() {
   return (
     <>
@@ -31,6 +35,10 @@ export default function Auth() {
             <Route  path="/auth/Formdetails" exact component={Formdetails}/>
             <Route path="/auth/Choice" exact component={Choice}/>
             <Route path="/auth/Thirdpageform" exact component={Thirdpageform}/>
+            <Route path="/auth/facebookaccess" exact component={Facebookaccess}/>
+            <Route path="/auth/credentials" exact component={Credentials}/>
+            <Route path="/auth/createPassword" exact component={CreatePassword}/>
+            <Route path="/auth/forgotPassword" exact component={ForgotPassword}/>
             <Redirect from="/auth" to="/auth/login" />
           </Switch>
           <FooterSmall absolute />

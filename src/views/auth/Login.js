@@ -1,15 +1,21 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import { authentication ,db } from "../../firebase-config";
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
-import { collection , addDoc, query, where, getDocs} from "firebase/firestore";
-import { ReactSession } from 'react-client-session';
+import { collection , addDoc, query, where, getDocs, Timestamp} from "firebase/firestore";
+import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
 
 export default function Login() {
+  console.log("logged_in: "+Cookies.get("logged_in"));
   const [otpSent,setOtpSent] = useState(false);
   const [phone,setPhone] = useState('');
   const [otp,setOtp] = useState('');
   const history   = useHistory();
+  const generatedOTPTableRef = collection(db, "generatedOTP");
+  const userTableRef = collection(db, "users");
+  const credentialsTableRef = collection(db, "credentials");
+  const adminTableRef= collection(db, "admin");
+  const countryCode = "+91";
   const generateRecaptcha = ()=>{
     window.recaptchaVerifier = new RecaptchaVerifier(authentication, 'recaptcha-container', {
       'size': 'invisible',
@@ -19,53 +25,102 @@ export default function Login() {
       }
     });
   }
-  const handleSubmit = (e)=>{
+//   useEffect(() => {
+//   if(Cookies.get("logged_in"))
+//   {
+//     history.push("/");
+//   }
+// },[]);
+  
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if(phone.length>=10) {
-      if (otpSent === false) {
-        generateRecaptcha();
-        let appVerifier=window.recaptchaVerifier;
-        signInWithPhoneNumber(authentication,phone,appVerifier).then((confirmationResult) => {
-          window.confirmationResult = confirmationResult;
-        }).catch((error) => {
-            console.log(error);
-        });
-        setOtpSent(true);
-      } else
+    const currentTimeStamp = Timestamp.now();
+    const dataAdditionDate = new Date(currentTimeStamp.seconds * 1000);
+    if (phone.length === 10) {
+      const fullPhoneNumber = countryCode + phone;
+
+      const qt = query(generatedOTPTableRef, where("phoneNumber", "==", fullPhoneNumber));
+      const querySnapshot1 = await getDocs(qt);
+      if(querySnapshot1.size ===0)
       {
-        if(otp.length===6)
-        {
-          let confirmationResult=window.confirmationResult;
-          confirmationResult.confirm(otp).then(async (result) => {
-            const user = result.user;
-            ReactSession.set("logged_in", true);
-            ReactSession.set("uid", user.uid);
-            ReactSession.set("phoneNumber", user.phoneNumber);
-            const userTableRef = collection(db, "users");
-            const q = query(userTableRef, where("uid", "==", user.uid));
-            const querySnapshot = await getDocs(q);
-            let cnt=0;
-            querySnapshot.forEach((doc) => {
-              // doc.data() is never undefined for query doc snapshots
-              cnt++;
-            });
-            if(cnt>0)
-            {
-              history.push("/admin");
-            }
-            else
-            {
-              history.push("/auth/register");
-            }
-            //addDoc(userTableRef, {uid: user.uid, phoneNumber: user.phoneNumber})
-            console.log(user.uid)
-          }).catch((error) => {
-            console.log(error);
-          });
-        }
+          const data = {
+            phoneNumber: fullPhoneNumber,
+            dataAdditionDate:dataAdditionDate
+          };
+          try {
+            const docRef = await addDoc(generatedOTPTableRef, data);
+            console.log("Document added with ID in OTP Generated table: ", docRef.id);
+          } catch (error) {
+            console.error("Error adding document: ", error);
+          }
       }
+
+        if (!otpSent) {
+          generateRecaptcha();
+          let appVerifier = window.recaptchaVerifier;
+          signInWithPhoneNumber(authentication, fullPhoneNumber, appVerifier)
+            .then((confirmationResult) => {
+              window.confirmationResult = confirmationResult;
+              setOtpSent(true);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        } else {
+          if (otp.length === 6) {
+            let confirmationResult = window.confirmationResult;
+            confirmationResult
+              .confirm(otp)
+              .then(async (result) => {
+                const user = result.user;
+                Cookies.set("logged_in", true);
+                Cookies.set("uid", user.uid);
+                Cookies.set("phoneNumber",fullPhoneNumber);
+  
+                // const q1 = query(adminTableRef, where("uid", "==", user.uid));
+                // const querySnapshot1 = await getDocs(q1);
+                //
+                // if (querySnapshot1.size != 0) {
+                //   Cookies.set("isAdmin", true);
+                //
+                //
+                // history.push("/adminform");
+                // }
+                // else {
+                //console.log("isAdmin: "+ Cookies.get("isAdmin"));
+                if(user.phoneNumber) {
+                  const data = {
+                    uid: user.uid,
+                    phoneNumber: fullPhoneNumber,
+                    dataAdditionDate: dataAdditionDate
+                  };
+                  try {
+                    const docRef = await addDoc(userTableRef, data);
+                    console.log("Document added with ID: ", docRef.id);
+                    history.push("/auth/createPassword");
+                  } catch (error) {
+                    console.error("Error adding document: ", error);
+                  }
+                }
+              //}
+
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+          
+        }
+
     }
-  }
+  };
+  
+
+  // console.log("login: "+ Cookies.get("logged_in"));
+  // if(Cookies.get("logged_in"))
+  // {
+  //   history.push("/");
+  // }
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -97,7 +152,7 @@ export default function Login() {
                       value={phone}
                       onChange={(e)=>setPhone(e.target.value)}
                       className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Enter Phone Number with Country Code"
+                      placeholder="Enter Phone Number"
                     />
                   </div>
 
@@ -128,7 +183,7 @@ export default function Login() {
                           className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                           type={"submit"}
                       >
-                        Get OTP
+                       Get OTP
                       </button>
                     }
                   </div>}
@@ -146,7 +201,7 @@ export default function Login() {
                 </form>
               </div>
             </div>
-            <div className="flex flex-wrap mt-6 relative">
+             <div className="flex flex-wrap mt-6 relative">
             </div>
           </div>
         </div>
