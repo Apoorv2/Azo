@@ -67,7 +67,7 @@ export default function Landing() {
               <div className="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
                 <div className="pr-12">
                   <h1 className="text-white font-semibold text-5xl">
-                   Automate your Digital Marketing Ads. {Cookies.get("username")}
+                   Automate your Digital Marketing
                   </h1>
                   <p className="mt-4 text-lg text-blueGray-200">
                   No Digital Marketing Expertise required
@@ -193,7 +193,7 @@ export default function Landing() {
                     Try our platform for free for 15 days
                     </h4>
                     <p className="text-md font-light mt-2 text-white">
-                    Azo is an AI-powered platform revolutionizing online marketing for businesses. It simplifies ad creation and management for non-experts, while its integrated AI categorizes leads as hot, warm, or cold, enabling personalized strategies. Take control of your ads without the need for an agency.
+                    Need help with social media postings? Let Azo do the work for you. Azo's powerful AI can create highly engaging relevant posts customized to your industry and your business services in few minutes and post it to your social media handles.
                     </p>
                   </blockquote>
                 </div>
@@ -313,7 +313,7 @@ export default function Landing() {
       <section className="relative block py-12">
         <div className="container mx-auto px-4">
           <h3 className="text-4xl font-semibold text-center mb-8">
-          Listen to Our Clients' Voices
+          Listen to Our Client's Voice
           </h3>
           <div className="customer-review-box">
           <Carousel
@@ -330,14 +330,18 @@ export default function Landing() {
             </div>
             <div>
               <p>I run a restaurant in Mumbai and had a tight budget for marketing. We wanted an expert marketing agency at low cost, who can use our social media and run ads to reach the target audience. We found Azo, as a smart marketing partner for small businesses like ours to get access to high-quality digital marketing services without breaking the bank. 
-Ramit Katyal</p>
-              <p>Mr. Foodie, Restaurant, Mumbai</p>
+            </p>
+              <p>Ramit Katyal
+              Mr. Foodie, Restaurant, Mumbai
+              </p>
+
             </div>
             <div>
               <p>We run an Aptech education franchise and need a good number of high quality student leads on daily basis. Instead of paying huge amount to Justdial and Sulekha for leads, we are now running our own lead generation campaigns through Azo. This platform is a game-changer for companies looking for low cost lead generation and digital marketing services. Highly recommended!
               </p>
               <p>Suraj Rathod
-Aptech, Pune</p>
+                Aptech, Pune
+                </p>
             </div>
           </Carousel>
           </div>
@@ -371,7 +375,7 @@ Aptech, Pune</p>
                  Get High Quality Leads
                 </h2>
                 <p className="text-lg leading-relaxed mt-4 mb-4 text-blueGray-400">
-                Get High Qulity Leads at low cost, our AI driven platform will work 24*7.
+                Get High Quality Leads at low cost, our AI driven platform will work 24*7.
                 </p>
               </div>
             </div>
@@ -381,7 +385,7 @@ Aptech, Pune</p>
                   <i className="fas fa-medal text-xl"></i>
                 </div>
                 <h6 className="text-xl mt-5 font-semibold text-white">
-                  Excelent Services
+                  Excellent Services
                 </h6>
                 <p className="mt-2 mb-4 text-blueGray-400">
                 Unlock business success with our excellent services.
