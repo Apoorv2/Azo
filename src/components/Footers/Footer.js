@@ -29,9 +29,8 @@ export default function Footer() {
               <h4 className="text-3xl font-semibold">Let's keep in touch!</h4>
               <h5 className="text-lg mt-0 mb-2 text-blueGray-600">
                 Azo (registered as Urban Serv Express Pvt. Ltd.)
-                CIN U74140DL2015PTC283749
-                D10/6, First Floor, Ardee City, Sector 52, Gurugram, Haryana 122003
-                Phone: 8287350714
+                CIN U74140DL2015PTC283749 D10/6, First Floor, Ardee City, Sector 52, Gurgaon, Haryana 122011 INDIA
+                Phone: 8800143030
                 Support@azoapp.in
               </h5>
                <div className="mt-6 lg:mb-0 mb-6">

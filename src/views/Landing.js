@@ -15,9 +15,13 @@ export default function Landing() {
   const history   = useHistory();
   const [businessName, setBusinessName] = useState(""); // State for business name
   const [phoneNumber, setPhoneNumber] = useState(""); 
- 
+ const [showPopup, setShowPopup] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (businessName !== '' || phoneNumber !== '') {
+          setShowPopup(true);
+        }
 
     // Create a timestamp for the form submission
     const currentTimeStamp = Timestamp.now();
@@ -114,9 +118,9 @@ export default function Landing() {
                     <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-red-400">
                       <i className="fas fa-award"></i>
                     </div>
-                    <h6 className="text-xl font-semibold">AI Driven Marketing Ads</h6>
+                    <h6 className="text-xl font-semibold">Automated Ad campaigns</h6>
                     <p className="mt-2 mb-4 text-blueGray-500">
-                    Experience marketing magic with AI – boost ROI, drive conversions, and outshine your competition!
+                    Run AI optimized ad campaigns and generate low cost leads with few simple clicks. No marketing expertise required.
                     </p>
                   </div>
                 </div>
@@ -128,9 +132,9 @@ export default function Landing() {
                     <div className="text-white p-3 text-center inline-flex items-center justify-center w-12 h-12 mb-5 shadow-lg rounded-full bg-lightBlue-400">
                       <i className="fas fa-retweet"></i>
                     </div>
-                    <h6 className="text-xl font-semibold">Get more low cost leads</h6>
+                    <h6 className="text-xl font-semibold">Social Media Postings</h6>
                     <p className="mt-2 mb-4 text-blueGray-500">
-                    Your business, real-time insights – discover, adapt, excel and conquer your market with the help of AI.
+                    Let AI generate social posts for you. Give simple inputs and get high quality, engaging posts for your social media platforms.
                     </p>
                   </div>
                 </div>
@@ -143,7 +147,7 @@ export default function Landing() {
                     </div>
                     <h6 className="text-xl font-semibold">Multi Channel Integration</h6>
                     <p className="mt-2 mb-4 text-blueGray-500">
-                    Harmonize your presence across channels – multi-channel integration, one brand, multiple voices
+                   Azo helps you manage Google, Facebook and Instagram centrally and helps you strategise better leading to increased ROI.
                     </p>
                   </div>
                 </div>
@@ -463,12 +467,17 @@ export default function Landing() {
                   </div>
 
                   <div className="text-center mt-6">
-                    <button
+                    <button onClick={handleSubmit}
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                       type="submit"
                     >
                       Submit
                     </button>
+                      {showPopup && (
+                                      <div className="bg-white text-black border rounded p-4 mb-4" style={{ display: 'block' }}>
+                                       Thank you for your interest in our services. A member of our team will reach out to you within the next 24 hours to assist you further.
+                                      </div>
+                        )}
                   </div>
                 </form>
                   </div>
