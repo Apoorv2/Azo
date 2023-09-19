@@ -4,6 +4,7 @@ import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import { collection , addDoc, query, where, getDocs, Timestamp} from "firebase/firestore";
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
+import * as emailjs from "@emailjs/browser";
 
 export default function Login() {
   console.log("logged_in: "+Cookies.get("logged_in"));
@@ -56,16 +57,23 @@ export default function Login() {
       }
 
         if (!otpSent) {
-          generateRecaptcha();
-          let appVerifier = window.recaptchaVerifier;
-          signInWithPhoneNumber(authentication, fullPhoneNumber, appVerifier)
-            .then((confirmationResult) => {
-              window.confirmationResult = confirmationResult;
-              setOtpSent(true);
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+          const q1 = query(userTableRef, where("phoneNumber", "==", fullPhoneNumber));
+          const querySnapshot1 = await getDocs(q1);
+          if(querySnapshot1.empty) {
+            generateRecaptcha();
+            let appVerifier = window.recaptchaVerifier;
+            signInWithPhoneNumber(authentication, fullPhoneNumber, appVerifier)
+                .then((confirmationResult) => {
+                  window.confirmationResult = confirmationResult;
+                  setOtpSent(true);
+                })
+                .catch((error) => {
+                  console.error(error);
+                });
+          }
+          else {
+            history.push("/");
+          }
         } else {
           if (otp.length === 6) {
             let confirmationResult = window.confirmationResult;
@@ -94,12 +102,30 @@ export default function Login() {
                     phoneNumber: fullPhoneNumber,
                     dataAdditionDate: dataAdditionDate
                   };
-                  try {
-                    const docRef = await addDoc(userTableRef, data);
-                    console.log("Document added with ID: ", docRef.id);
-                    history.push("/auth/createPassword");
-                  } catch (error) {
-                    console.error("Error adding document: ", error);
+                  const q1 = query(userTableRef, where("uid", "==", user.uid));
+                  const querySnapshot1 = await getDocs(q1);
+                  if(querySnapshot1.empty) {
+                    try {
+                      const docRef = await addDoc(userTableRef, data);
+                      console.log("Document added with ID: ", docRef.id);
+                      console.log("sending Email")
+                      let templateParams = {
+                        message: user.phoneNumber
+                      };
+                      emailjs.send('service_thovrin', 'template_lhuip6d', templateParams,'NTBb8q0NNjm0bWork')
+                          .then(function(response) {
+                            console.log('SUCCESS!', response.status, response.text);
+                          }, function(error) {
+                            console.log('FAILED...', error);
+                          });
+                      history.push("/auth/createPassword");
+                    } catch (error) {
+                      console.error("Error adding document: ", error);
+                    }
+                  }
+                  else
+                  {
+                    history.push("/");
                   }
                 }
               //}

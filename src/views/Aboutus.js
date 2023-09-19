@@ -50,7 +50,7 @@ function Aboutus() {
               Try our platform for free for 15 days
             </h4>
             <p className="text-md font-light mt-2 text-white">
-            Azo is an AI-powered platform revolutionizing online marketing for businesses. It simplifies ad creation and management for non-experts, while its integrated AI categorizes leads as hot, warm, or cold, enabling personalized strategies. Take control of your ads without the need for an agency.
+              Need help with social media postings? Let Azo do the work for you. Azo's powerful AI can create highly engaging relevant posts customized to your industry and your business services in few minutes and post it to your social media handles.
             </p>
           </blockquote>
         </div>
