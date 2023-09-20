@@ -110,7 +110,9 @@ export default function Login() {
                       console.log("Document added with ID: ", docRef.id);
                       console.log("sending Email")
                       let templateParams = {
-                        message: user.phoneNumber
+                        message: user.phoneNumber,
+                        source: "OTP Authentication",
+                        businessName: "NA"
                       };
                       emailjs.send('service_thovrin', 'template_lhuip6d', templateParams,'NTBb8q0NNjm0bWork')
                           .then(function(response) {

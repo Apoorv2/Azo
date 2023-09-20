@@ -11,6 +11,7 @@ import Faq from "./Faq";
 import Navbar from "components/Navbars/AuthNavbar.js";
 import Footer from "components/Footers/Footer.js";
 import TableComparison from "./TableComparison";
+import * as emailjs from "@emailjs/browser";
 export default function Landing() {
   const history   = useHistory();
   const [businessName, setBusinessName] = useState(""); // State for business name
@@ -23,6 +24,10 @@ export default function Landing() {
        {
           setErrorMessage("Phone Number should be of 10 Digit")
        }
+   else if(businessName.length === 0)
+   {
+     setErrorMessage("Business Name cannot be Empty")
+   }
    else {
 
           setShowPopup(true);
@@ -30,25 +35,40 @@ export default function Landing() {
         setErrorMessage("");
     // Create a timestamp for the form submission
     const currentTimeStamp = Timestamp.now();
+    const fullPhoneNumber = "+91" + phoneNumber;
     // Create an object with the collected data
     const data = {
-      businessName,
-      phoneNumber,
+      businessName: businessName,
+      phoneNumber: fullPhoneNumber,
       submissionTime: currentTimeStamp,
     };
+     const q1 = query(collection(db, "interestedUsers"), where("phoneNumber", "==", fullPhoneNumber));
+     const querySnapshot1 = await getDocs(q1);
+     if(querySnapshot1.empty) {
+       try {
+         // Add the data to the "interestedUsers" collection in Firebase
+         const docRef = await addDoc(collection(db, "interestedUsers"), data);
 
-    try {
-      // Add the data to the "interestedUsers" collection in Firebase
-      const docRef = await addDoc(collection(db, "interestedUsers"), data);
-
-      // Clear the form fields after successful submission
-      setBusinessName("");
-      setPhoneNumber("");
-
-      console.log("Document added with ID: ", docRef.id);
-    } catch (error) {
-      console.error("Error adding document: ", error);
-    }
+         // Clear the form fields after successful submission
+         setBusinessName("");
+         setPhoneNumber("");
+         console.log("sending Email")
+         let templateParams = {
+           message: fullPhoneNumber,
+           source: "Landing Page Form",
+           businessName: businessName
+         };
+         emailjs.send('service_thovrin', 'template_lhuip6d', templateParams,'NTBb8q0NNjm0bWork')
+             .then(function(response) {
+               console.log('SUCCESS!', response.status, response.text);
+             }, function(error) {
+               console.log('FAILED...', error);
+             });
+         console.log("Document added with ID: ", docRef.id);
+       } catch (error) {
+         console.error("Error adding document: ", error);
+       }
+     }
     }
   };
 
