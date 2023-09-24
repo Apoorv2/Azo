@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { useHistory, Link } from "react-router-dom";
 import { db } from "../../firebase-config";
 import {collection, query, where, getDocs, updateDoc, addDoc, Timestamp} from "firebase/firestore";
 import Cookies from "js-cookie";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 export default function CreatePassword() {
+useEffect(() => {
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'CreatePassword Page',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
   const [password, setPassword] = useState("");
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");

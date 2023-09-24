@@ -1,10 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom"; // Import Link for "Sign Up" and "Forgot Password" links
 import { authentication, db } from "../../firebase-config";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import Cookies from "js-cookie";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 export default function Credentials() {
+useEffect(() => {
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'Login Page',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();

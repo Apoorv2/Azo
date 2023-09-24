@@ -5,8 +5,15 @@ import { db } from "../../firebase-config";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
-
+import { getAnalytics, logEvent } from "firebase/analytics";
 function FormDetails() {
+ useEffect(() => {
+   const analytics = getAnalytics();
+   logEvent(analytics, 'screen_view', {
+     firebase_screen: 'Form Page 2',
+     //firebase_screen_class: screenClass
+   });
+  }, []);
   const history = useHistory();
   const [startDate, setStartDate] = useState(
     new Date().toISOString().split("T")[0]

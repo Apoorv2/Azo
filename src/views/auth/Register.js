@@ -3,8 +3,17 @@ import { collection, addDoc } from "firebase/firestore";
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
 import { db } from "../../firebase-config";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 export default function Register() {
+
+useEffect(() => {
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'form Page 1',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
   const [name, setName] = useState("");
   const [industry, setIndustry] = useState("");
   // const [email, setEmail] = useState("");

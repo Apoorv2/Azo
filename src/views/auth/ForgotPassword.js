@@ -6,8 +6,18 @@ import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
 import axios from 'axios';
 import * as emailjs from "@emailjs/browser";
+import { getAnalytics, logEvent } from "firebase/analytics";
+
 
 export default function ForgotPassword() {
+useEffect(() => {
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'forgot password',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
+
     const [phone,setPhone] = useState('');
     const history   = useHistory();
     const generatedOTPTableRef = collection(db, "generatedOTP");

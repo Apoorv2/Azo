@@ -4,8 +4,16 @@ import { db } from "../../firebase-config";
 import Cookies from "js-cookie";
 import { useHistory } from "react-router-dom";
 import { getStorage, ref, uploadBytes,getDownloadURL } from 'firebase/storage';
-
+import { getAnalytics, logEvent } from "firebase/analytics";
 function Thirdpageform({ onSubmit }) {
+
+ useEffect(() => {
+   const analytics = getAnalytics();
+   logEvent(analytics, 'screen_view', {
+     firebase_screen: 'Form Page 3',
+     //firebase_screen_class: screenClass
+   });
+  }, []);
   const history   = useHistory();
   const storage = getStorage();
   const [locations, setLocations] = useState([""]); // An array to store up to 5 locations

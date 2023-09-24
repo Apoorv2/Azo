@@ -1,10 +1,21 @@
 
-import React from 'react';
+import React, {useEffect} from "react";
 import { Link } from 'react-router-dom';
 import Navbar from "components/Navbars/IndexNavbar.js";
 import Footer from "components/Footers/FooterAdmin.js";
+import { getAnalytics, logEvent } from "firebase/analytics";
+
 
 function Aboutus() {
+
+useEffect(() => {
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'About us Page',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
+
   return (
     <>
     <Navbar className='bg-bluegray-800'/>

@@ -1,11 +1,12 @@
 import React, {useState,useEffect} from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { db } from "../firebase-config";
+import { db , analytics } from "../firebase-config";
 import { collection , addDoc, query, where, getDocs, Timestamp} from "firebase/firestore";
 import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 import Faq from "./Faq";
 import Navbar from "components/Navbars/AuthNavbar.js";
@@ -13,11 +14,48 @@ import Footer from "components/Footers/Footer.js";
 import TableComparison from "./TableComparison";
 import * as emailjs from "@emailjs/browser";
 export default function Landing() {
+
+useEffect(() => {
+
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'Landing Page',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
+
   const history   = useHistory();
   const [businessName, setBusinessName] = useState(""); // State for business name
   const [phoneNumber, setPhoneNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
  const [showPopup, setShowPopup] = useState(false);
+ const [showScrollButton, setShowScrollButton] = useState(false);
+ useEffect(() => {
+     // Add a scroll event listener to show/hide the scroll button
+     window.addEventListener('scroll', handleScroll);
+
+     // Clean up the event listener when the component unmounts
+     return () => {
+       window.removeEventListener('scroll', handleScroll);
+     };
+   }, []);
+  const handleScroll = () => {
+      // Show the scroll button when the user scrolls down 100 pixels
+      if (window.scrollY > 100) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    const handleButtonClick = () => {
+
+      history.push("/auth/credentials")
+      // Scroll to the top of the page when the button is clicked
+      //window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
    if (phoneNumber.length != 10 )
@@ -78,6 +116,14 @@ export default function Landing() {
     <>
       <Navbar transparent />
       <main>
+       {showScrollButton && (
+                       <button
+                         onClick={handleButtonClick}
+                        className={`vertical-center bg-lightBlue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full ${showScrollButton ? 'block' : 'hidden'}`}
+                       >
+                         Start your 15 days free trial Now
+                       </button>
+                     )}
         <div className="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
           <div
             className="absolute top-0 w-full h-full bg-center bg-cover"

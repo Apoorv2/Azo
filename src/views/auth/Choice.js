@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../firebase-config";
 import Cookies from 'js-cookie';
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 async function checkUserInfo(uid, userInfoTableRef, adminTableRef, history) {
   const q = query(userInfoTableRef, where("uid", "==", uid));
@@ -21,6 +22,14 @@ async function checkUserInfo(uid, userInfoTableRef, adminTableRef, history) {
 }
 
 function Choice() {
+
+useEffect(() => {
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'Choice Page',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
   console.log("login: " + Cookies.get("logged_in"));
   console.log("user_uid: " + Cookies.get("uid"));
   const history = useHistory();
@@ -46,7 +55,19 @@ function Choice() {
  const handleCall = (e) => {
    setShowPopup(true);
    setTimeout(() => setShowPopup(false ),5000);
+     const analytics = getAnalytics();
+       logEvent(analytics, 'button_click', {
+         button_name: 'book_call_button',
+       });
  }
+  const handleFillSubmit = (e) => {
+      const analytics = getAnalytics();
+        logEvent(analytics, 'button_click', {
+          button_name: 'fill_the_form_button',
+        });
+  }
+
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
@@ -90,7 +111,7 @@ function Choice() {
                   </div>
                 )}
                 <Link to="/auth/register">
-                  <button
+                  <button onClick = {handleFillSubmit}
                     className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                     type="submit"
                     name="fillFormButton" 

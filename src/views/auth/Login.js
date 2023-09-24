@@ -5,8 +5,17 @@ import { collection , addDoc, query, where, getDocs, Timestamp} from "firebase/f
 import Cookies from 'js-cookie';
 import { useHistory } from "react-router-dom";
 import * as emailjs from "@emailjs/browser";
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 export default function Login() {
+useEffect(() => {
+  const analytics = getAnalytics();
+  logEvent(analytics, 'screen_view', {
+    firebase_screen: 'generate OTP Page',
+    //firebase_screen_class: screenClass
+  });
+ }, []);
+
   console.log("logged_in: "+Cookies.get("logged_in"));
   const [otpSent,setOtpSent] = useState(false);
   const [phone,setPhone] = useState('');

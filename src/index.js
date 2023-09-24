@@ -1,6 +1,8 @@
 import ReactDOM from "react-dom";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
+
+
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "assets/styles/tailwind.css";
 
@@ -23,6 +25,8 @@ import AdminForm from "views/AdminForm";
 Cookies.set("logged_in", false);
 Cookies.set("uid", null);
 Cookies.set("isAdmin", false);
+
+
 
 ReactDOM.render(
   <BrowserRouter>
