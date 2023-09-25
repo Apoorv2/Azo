@@ -20,6 +20,7 @@
     "gulp-append-prepend": "1.0.8",
     "js-cookie": "^3.0.5",
     "nodemailer": "^6.9.5",
+    "openai": "^4.10.0",
     "postcss": "8.2.8",
     "react": "17.0.1",
     "react-client-session": "^0.0.8",

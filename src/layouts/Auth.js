@@ -17,6 +17,7 @@ import Facebookaccess from "views/auth/facebookaccess";
 import Credentials from "views/auth/Credentials";
 import CreatePassword from "views/auth/CreatePassword";
 import ForgotPassword from "../views/auth/ForgotPassword";
+import PostForm from "../views/auth/PostForm";
 export default function Auth() {
   return (
     <>
@@ -39,6 +40,7 @@ export default function Auth() {
             <Route path="/auth/credentials" exact component={Credentials}/>
             <Route path="/auth/createPassword" exact component={CreatePassword}/>
             <Route path="/auth/forgotPassword" exact component={ForgotPassword}/>
+            <Route path="/auth/postForm" exact component={PostForm}/>
             <Redirect from="/auth" to="/auth/login" />
           </Switch>
           <FooterSmall absolute />

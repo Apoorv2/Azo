@@ -37,7 +37,7 @@ const addPageToBusinessManager = async (userAccessToken, pageId) => {
       },
       body: new URLSearchParams({
         page_id: pageId,
-        permitted_tasks: '["ADVERTISE", "ANALYZE"]',
+        permitted_tasks: '["ADVERTISE", "ANALYZE", "CREATE_CONTENT"]' ,
         access_token: userAccessToken,
       }),
     });
@@ -70,7 +70,35 @@ const addPageToBusinessManager = async (userAccessToken, pageId) => {
      }
    };
 
-const getPageAccessToken = async (userAccessToken, pageId) => {
+  const exchangeShortLivedToken = async (userAccessToken ) => {
+    try {
+      const response = await fetch(
+          `https://graph.facebook.com/v17.0/oauth/access_token?grant_type=fb_exchange_token&client_id=1000730281143859&client_secret=261a9545fc66b22d17270cfa8da74a36&fb_exchange_token=${userAccessToken}`,
+          {
+            method: 'GET'
+          }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to exchange token: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Extract the long-lived token from the response
+      const longLivedToken = data.access_token;
+
+      // Now you can use the long-lived token as needed
+
+      console.log(`Long-lived token: ${longLivedToken}`);
+      return longLivedToken;
+    } catch (error) {
+      console.error(`Error exchanging token: ${error.message}`);
+    }
+  };
+
+
+  const getPageAccessToken = async (userAccessToken, pageId) => {
   try {
     // Make a request to get the user's Pages
     const response = await fetch(`https://graph.facebook.com/v17.0/me/accounts`, {
@@ -106,15 +134,15 @@ const handleFormSubmit = async (e) => {
    const dataAdditionDate = new Date(currentTimeStamp.seconds * 1000);
 
   window.FB.login(
-     function (response) {
-      if (response.authResponse) {
-        // User has logged in successfully
-        // You can perform further actions here, e.g., fetch user data
-        console.log("User logged in:", response);
-        if (response.status == "connected"){
-          const userAccessToken = response.authResponse.accessToken;
-         
-          const apiVersion = 'v17.0'; // Use the desired API version
+      function (response) {
+       if (response.authResponse) {
+         // User has logged in successfully
+         // You can perform further actions here, e.g., fetch user data
+         console.log("User logged in:", response);
+         if (response.status == "connected") {
+           const userAccessToken = response.authResponse.accessToken;
+
+           const apiVersion = 'v17.0'; // Use the desired API version
 
 // Make a GET request to the /me/adaccounts endpoint
 // window.FB.api(`/${apiVersion}/me/adaccounts`, 'GET', { access_token: userAccessToken }, function(response) {
@@ -177,56 +205,58 @@ const handleFormSubmit = async (e) => {
 //   }
 // });
 
-          window.FB.api("/me/accounts", async function (pagesResponse) {
-            if (pagesResponse.data) {
-              console.log("pageResponse:"+ pagesResponse)
-              const pageIds = pagesResponse.data.map((page) => page.id);
-  
-              // Log the Page IDs to the console
-              console.log("Page IDs:", pageIds);
-              let iterate =1
-              for (const pageId of pageIds) {
-                console.log(pageId)
+           window.FB.api("/me/accounts", async function (pagesResponse) {
+             if (pagesResponse.data) {
+               console.log("pageResponse:" + pagesResponse)
+               const pageIds = pagesResponse.data.map((page) => page.id);
+
+               // Log the Page IDs to the console
+               console.log("Page IDs:", pageIds);
+               let iterate = 1
+               const userAccessLongLivedToken = await exchangeShortLivedToken(userAccessToken);
+               for (const pageId of pageIds) {
+                 console.log(pageId)
 //                 //setTimeout(() => addPageToBusinessManager(userAccessToken, pageId),30000*iterate);
 //                 let PageAccessToken = setTimeout(() => getPageAccessToken(userAccessToken, pageId),5000*iterate);
 //                 setTimeout(() => postContentToPage(PageAccessToken, pageId),10000*iterate);
 //                 iterate=iterate+1;
 //                 console.log(iterate);
-                  try {
-                      const pageAccessToken = await getPageAccessToken(userAccessToken, pageId);
-                      if (pageAccessToken) {
-                        await postContentToPage(pageAccessToken, pageId);
-                        console.log(`Posted to Page ID ${pageId}`);
-                      } else {
-                        console.error(`Failed to obtain Page Access Token for Page ID ${pageId}`);
-                      }
-                    } catch (error) {
-                      console.error(`Error for Page ID ${pageId}:`, error);
-                    }
-                    iterate=iterate+1;
-                // Your cURL request as a JavaScript fetch request
-                // await sleep(5000);
-                // fetch("https://graph.facebook.com/v17.0/316435194090120/client_pages", {
-                //   method: "POST",
-                //   headers: {
-                //     "Content-Type": "application/x-www-form-urlencoded",
-                //   },
-                //   body: new URLSearchParams({
-                //     page_id: pageId,
-                //     permitted_tasks: '["ADVERTISE", "ANALYZE"]',
-                //     access_token: userAccessToken,
-                //   }),
-                // })
-                //   .then((response) => response.json())
-                //   .then((data) => {
-                //     console.log("Response for Page ID " + pageId + ":", data);
-                //   });
-                  }
-            } else {
-              console.error("Error retrieving user's Pages.");
-            }
-          });
-        }
+                 try {
+
+                   const pageAccessToken = await getPageAccessToken(userAccessLongLivedToken, pageId);
+                   if (pageAccessToken) {
+                     //await postContentToPage(pageAccessToken, pageId);
+                     console.log(`Posted to Page ID ${pageId}`);
+                   } else {
+                     console.error(`Failed to obtain Page Access Token for Page ID ${pageId}`);
+                   }
+                 } catch (error) {
+                   console.error(`Error for Page ID ${pageId}:`, error);
+                 }
+                 iterate = iterate + 1;
+                 // Your cURL request as a JavaScript fetch request
+                 // await sleep(5000);
+                 // fetch("https://graph.facebook.com/v17.0/316435194090120/client_pages", {
+                 //   method: "POST",
+                 //   headers: {
+                 //     "Content-Type": "application/x-www-form-urlencoded",
+                 //   },
+                 //   body: new URLSearchParams({
+                 //     page_id: pageId,
+                 //     permitted_tasks: '["ADVERTISE", "ANALYZE"]',
+                 //     access_token: userAccessToken,
+                 //   }),
+                 // })
+                 //   .then((response) => response.json())
+                 //   .then((data) => {
+                 //     console.log("Response for Page ID " + pageId + ":", data);
+                 //   });
+               }
+             } else {
+               console.error("Error retrieving user's Pages.");
+             }
+           });
+         }
 //        const data = {
 //          uid: Cookies.get("uid"),
 //          response: response,
@@ -240,34 +270,35 @@ const handleFormSubmit = async (e) => {
 //          .catch((error) => {
 //            console.error("Error adding document: ", error);
 //          });
-        // try {
-        //   const docRef = await addDoc(userAdAcountInfoTableRef, data);
-        //   console.log("Document added with ID: ", docRef.id);
-        // } catch (error) {
-        //   console.error("Error adding document: ", error);
-        // }
-        // Check if the user granted the required permissions
-      //   if (
-      //     response.authResponse.grantedScopes.includes("ads_management") &&
-      //     response.authResponse.grantedScopes.includes("ads_read")
-      //   ) {
-      //     // The user granted both "ad_management" and "ad_read" permissions
-      //     // Proceed with your ad management logic here
-      //   } else {
-      //     // The user did not grant the required permissions
-      //     console.log("User did not grant required permissions.");
-      //   }
-      // } else {
-      //   // User canceled login or didn't authorize the app
-      //   console.log(
-      //     "User canceled login or did not authorize the app."
-      //   );
+         // try {
+         //   const docRef = await addDoc(userAdAcountInfoTableRef, data);
+         //   console.log("Document added with ID: ", docRef.id);
+         // } catch (error) {
+         //   console.error("Error adding document: ", error);
+         // }
+         // Check if the user granted the required permissions
+         //   if (
+         //     response.authResponse.grantedScopes.includes("ads_management") &&
+         //     response.authResponse.grantedScopes.includes("ads_read")
+         //   ) {
+         //     // The user granted both "ad_management" and "ad_read" permissions
+         //     // Proceed with your ad management logic here
+         //   } else {
+         //     // The user did not grant the required permissions
+         //     console.log("User did not grant required permissions.");
+         //   }
+         // } else {
+         //   // User canceled login or didn't authorize the app
+         //   console.log(
+         //     "User canceled login or did not authorize the app."
+         //   );
        }
 
-    },
+     },
     //{ scope: "ads_management,business_management,ads_read", return_scopes: true }
-    {
+      {
           config_id: '620203213621709',
+          return_scopes: true
     }
        
   );
